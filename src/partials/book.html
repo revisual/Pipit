@@ -21,7 +21,7 @@
 <div class="toolBar" ng-controller="ToolBarCtrl">
     <label>Image Size</label>
     <slider-control
-            touchEnabled="{{hasTouch}}"
+            touch-enabled="{{hasTouch}}"
             enabled="{{enabled}}"
             ng-model="imageSize"
             min="{{imageSizeSliderValues.min}}"
@@ -36,6 +36,15 @@
             min="{{sensitivitySliderValues.min}}"
             max="{{sensitivitySliderValues.max}}"
             increment="{{sensitivitySliderValues.step}}">
+    </slider-control>
+    <label>Drag: {{drag}}</label>
+    <slider-control
+            touch-enabled="{{hasTouch}}"
+            enabled="{{enabled}}"
+            ng-model="drag"
+            min="{{dragSliderValues.min}}"
+            max="{{dragSliderValues.max}}"
+            increment="{{dragSliderValues.step}}">
     </slider-control>
 
 

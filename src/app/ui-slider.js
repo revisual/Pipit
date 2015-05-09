@@ -4,7 +4,7 @@
 
    var app = angular.module( 'angular-slider', [] );
 
-   app.directive( 'sliderControl', function ( $swipe ) {
+   app.directive( 'sliderControl',['$swipe', function ( $swipe ) {
 
       return {
          restrict: "E",
@@ -178,7 +178,7 @@
 
          }
       }
-   } )
+   } ])
 
 
 })( window.angular );

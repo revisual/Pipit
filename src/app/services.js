@@ -2,7 +2,7 @@
 
 angular.module( 'app.services', [] )
 
-   .factory( 'WindowService', function ( $window ) {
+   .factory( 'WindowService', ['$window', function ( $window ) {
 
       var signal = new signals.Signal();
       var o = {
@@ -21,9 +21,9 @@ angular.module( 'app.services', [] )
       };
       return o;
 
-   } )
+   }] )
 
-   .factory( 'ImageSize', function ( WindowService ) {
+   .factory( 'ImageSize', ['WindowService', function ( WindowService ) {
 
       var minSizes = [768, 992, 1200];
       var imagesSizes = [768, 992, 1200, 992];
@@ -44,16 +44,16 @@ angular.module( 'app.services', [] )
             return imagesSizes[imagesSizes.length - 1];
          }
       }
-   } )
+   }] )
 
-   .factory( 'API', function ( $http, ImageSize ) {
+   .factory( 'API', ['$http', 'ImageSize', function ( $http, ImageSize ) {
 
       return {
          getBook: function ( project, book ) {
             return $http.get( '/api-book/' + project + '/' + book + '/' + ImageSize.getValue() + '/' )
                .then( function ( result ) {
                   return result.data;
-               } );git
+               } );
 
 
          },
@@ -79,10 +79,10 @@ angular.module( 'app.services', [] )
       }
 
 
-   } )
+   }] )
 
    //todo - pull out the tick stuff into its own service
-   .factory( 'BookService', function ( $location, animationFrame, API, imageService ) {
+   .factory( 'BookService', ['$location','animationFrame','API','imageService', 'Settings', function ( $location, animationFrame, API, imageService, Settings ) {
 
       var NULL_RETURN = {baseURL: null, overlayURL: null, overlayOpacity: -1};
       var _tick = new signals.Signal();
@@ -181,7 +181,7 @@ angular.module( 'app.services', [] )
 
 
       var applyValue = function () {
-         _overlayData.currentValue += (_overlayData.targetValue - _overlayData.currentValue) * 0.25;
+         _overlayData.currentValue += (_overlayData.targetValue - _overlayData.currentValue) * Settings.drag;
          var v = _overlayData.currentValue * imageService.totalNumberImages;
          _pageValues.page = Math.floor( v );
          _pageValues.remainder = v - _pageValues.page;
@@ -216,7 +216,7 @@ angular.module( 'app.services', [] )
          reset: reset
       }
 
-   } )
+   } ])
 
    .factory( 'Settings', function () {
 
@@ -224,7 +224,9 @@ angular.module( 'app.services', [] )
       return {
          fullscreen: false,
          sensitivity: 4,
-         sensitivitySliderValues: {min: 0.25, max: 20, step: 0.25},
+         sensitivitySliderValues: {min: 0.5, max: 10, step: 0.5},
+         drag: 0.5,
+         dragSliderValues: {min: 0.1, max: 1.0, step: 0.1},
          imageSize: 110,
          imageSizeSliderValues: {min: 50, max: 110, step: 1},
          getImageSizeAsCSS: function () {
@@ -240,11 +242,8 @@ angular.module( 'app.services', [] )
 
       }
 
-   }
-)
-
-   .
-   value( 'imageService', new ImageListLoader() );
+   }   )
+   . value( 'imageService', new ImageListLoader() );
 
 
 

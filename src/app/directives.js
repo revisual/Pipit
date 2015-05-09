@@ -1,7 +1,7 @@
 'use strict';
 angular.module( 'app.directives', [] )
 
-   .directive( 'trackPad', function ( $swipe ) {
+   .directive( 'trackPad', ['$swipe',function ( $swipe ) {
 
       return {
          restrict: "E",
@@ -120,9 +120,9 @@ angular.module( 'app.directives', [] )
 
          }
       }
-   } )
+   } ])
 
-   .directive( 'imageOverlay', function () {
+   .directive( 'imageOverlay', [function () {
       return {
          restrict: "E",
          link: function ( scope, element, attribs ) {
@@ -164,7 +164,7 @@ angular.module( 'app.directives', [] )
 
          }
       }
-   } )
+   } ])
 
 
 ;
