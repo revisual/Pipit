@@ -1,0 +1,32 @@
+<div class="banner">
+    <div class="container">
+        <h1>FLICKERS<span class="small"> beta</span>  </h1>
+    </div>
+
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6" ng-include="partial">
+            INFO
+        </div>
+        <div class="col-md-6">
+
+
+
+            <accordion close-others="true">
+
+                <accordion-group ng-repeat="project in projects">
+                    <accordion-heading>
+                        <img ng-src="{{project.thumb}}" class="thumb">{{project.title}}
+                    </accordion-heading>
+                    <div class="list-group">
+                        <a href="book/?project={{project.id}}&book={{book.id}}" class="list-group-item" ng-repeat="book in project.content">
+                            <img ng-src="{{book.thumb}}" class="thumb">{{book.title}}
+                        </a>
+                    </div>
+                </accordion-group>
+            </accordion>
+        </div>
+    </div>
+</div>

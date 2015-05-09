@@ -1,0 +1,13 @@
+#accordion.panel-group.col-md-6
+    each project in files
+        .panel.panel-info
+            .panel-heading
+                a(data-toggle="collapse", data-parent="#accordion", href='##{project.id}')
+                    h4.panel-title
+                        img.thumb(src='#{imagePath}#{project.id}/thumbs/#{project.id}.jpg')
+                        | #{project.title}
+
+            .panel-collapse.collapse(id='#{project.id}')
+                .panel-body
+                    .list-group
+                        include accordion-list

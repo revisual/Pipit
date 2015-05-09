@@ -1,0 +1,4 @@
+each book in project.content
+    a.list-group-item(ng-click="loadBook()")
+        img.thumb(src='#{imagePath}#{project.id}/thumbs/#{book.id}.jpg')
+        | #{book.title}

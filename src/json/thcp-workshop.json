@@ -1,0 +1,84 @@
+{
+  "title": "THCP Workshop",
+  "id": "thcp-workshop",
+  "index": 3,
+  "private": true,
+  "content": [
+    {
+      "id": "spinning",
+      "title": "Spinning by Sophie Price",
+      "range": "0-45"
+    },
+    {
+      "id": "leaves-in-wind",
+      "title": "Leaves In Wind by Eileen Richards",
+      "range": "0-14"
+    },
+    {
+      "id": "dead-nettle",
+      "title": "Dead Nettle by Jane Dilley",
+      "range": "0-13"
+    },
+    {
+      "id": "ladybird-hand",
+      "title": "Ladybird Hand by Laura Montero",
+      "range": "0-17"
+    },
+    {
+      "id": "autumn-leaves",
+      "title": "Autumn Leaves by Lizzie Guinness",
+      "range": "0-37"
+    },
+    {
+      "id": "grave-stone-dodge",
+      "title": "Gravestone Dodge by Lizzie Guinness",
+      "range": "0-36"
+    },
+    {
+      "id": "fugal-study",
+      "title": "Fungal Study by Marian Sibley",
+      "range": "0-58"
+    },
+    {
+      "id": "ladybird-circle",
+      "title": "Ladybird Circle by Monica Sablone",
+      "range": "0-27"
+    },
+    {
+      "id": "fungus-flight",
+      "title": "Fungus Flight by Nadia Ward",
+      "range": "0-56"
+    },
+    {
+      "id": "butterfly-camera",
+      "title": "Butterfly Camera by Nadia Ward",
+      "range": "0-64"
+    },
+    {
+      "id": "log-circle",
+      "title": "Log Circle by Sibel Keefe",
+      "range": "0-45"
+    },
+    {
+      "id": "dear-wife",
+      "title": "Dear Wife by Elicia Johnson",
+      "range": "0-40"
+    }
+  ,
+    {
+      "id": "leaf-shaking",
+      "title": "Leaf Shaking by Petra Hilgers",
+      "range": "0-14"
+    }
+  ,
+    {
+      "id": "pull-back",
+      "title": "Pull Back by Petra Hilgers",
+      "range": "0-58"
+    }
+
+
+
+
+  ]
+}

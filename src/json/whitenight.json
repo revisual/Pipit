@@ -1,0 +1,27 @@
+{
+  "title": "Brighton White Nights: Into The Sea",
+  "id": "whitenight",
+  "index":0,
+  "content": [
+    {
+      "id": "thru-the-tunnel",
+      "title": "Through the Tunnel",
+      "range": "0-79"
+    },
+    {
+      "id": "splashing",
+      "title": "Splashing with the Fishes",
+      "range": "0-79"
+    },
+    {
+      "id": "processional",
+      "title": "Processional March",
+      "range": "0-79"
+    },
+    {
+      "id": "into-the-sea",
+      "title": "Into the Sea",
+      "range": "0-79"
+    }
+  ]
+}

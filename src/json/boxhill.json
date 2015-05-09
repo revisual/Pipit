@@ -1,0 +1,37 @@
+{
+  "title": "Box Hill Flickers",
+  "id": "boxhill",
+  "index":1,
+  "content": [
+    {
+      "id": "goldcrest",
+      "title": "Gold Crest",
+      "range": "0-79"
+    },
+    {
+      "id": "silver-frit",
+      "title": "Sliver Washed Fritillary",
+      "range": "0-79"
+    },
+    {
+      "id": "small-blue",
+      "title": "Small Blue",
+      "range": "0-79"
+    },
+    {
+      "id": "glow-worm",
+      "title": "Glow Worms",
+      "range": "0-79"
+    },
+    {
+      "id": "door-mouse",
+      "title": "Door Mouse",
+      "range": "0-79"
+    },
+    {
+      "id": "stag-beetle",
+      "title": "Stag Beetle",
+      "range": "0-79"
+    }
+  ]
+}

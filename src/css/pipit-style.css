@@ -1,0 +1,173 @@
+
+body {
+    background-color: #000000;
+}
+
+.panel {
+    background-color: #d5dfe7;
+}
+
+.panel-info > .panel-heading + .panel-collapse .panel-body {
+    border-top-color: #877965;
+}
+
+.panel-heading,
+.list-group-item {
+
+    padding: 0px;
+
+}
+
+.panel-info {
+    border-color: #403930;
+}
+
+.panel-info > .panel-heading {
+    color: #403930;
+    background-color: #beaf95;
+    border-color: #403930;
+}
+
+.panel-title .thumb,
+.list-group-item .thumb {
+
+    margin: 5px;
+
+    -webkit-box-shadow: 1px 1px 2px rgb(71, 63, 48);
+    box-shadow: 1px 1px 2px rgb(71, 63, 48);
+}
+
+.list-group-item {
+
+    background-color: transparent;
+    border: none; /*1px solid #877965;*/
+}
+
+.list-group > a:hover,
+.list-group > a:focus {
+
+    background-color: rgba(125, 112, 95, 0.32);
+    border: none; /*1px solid #877965;*/
+}
+
+.panel-title > a:hover,
+.panel-title > a:focus {
+    text-decoration: none;
+    color: #877965;
+}
+
+.banner {
+    background-color: #4e453b;
+    margin-bottom: 10px;
+}
+
+h1 {
+    color: #ffffff;
+}
+
+track-pad {
+    position: fixed;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.pipit-menu-button {
+    position: fixed;
+    left: 5px;
+    top: 5px;
+    opacity: 0.66;
+}
+
+#progressArc {
+
+    position: absolute;
+}
+
+:-webkit-full-screen {
+    background: #000000
+}
+
+:-moz-full-screen {
+    background: #000000
+}
+
+:-ms-fullscreen {
+    background: #000000
+}
+
+:fullscreen {
+    background: #000000
+}
+
+#progressArc.circle {
+    transition: stroke-dashoffset 0.1s linear;
+    vertical-align: middle;
+
+}
+
+.flickBook {
+    /*background: #000000 ;*/
+    background: no-repeat center;
+    background-size: 100%;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: -1;
+
+}
+
+.resizeBar {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+}
+
+.toolBar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+}
+
+slider-control {
+    width: 150px;
+    height: 33px;
+    background-color: #ff00ff;
+    position: relative;
+    display: block;
+}
+
+slider-control > .fill {
+    background-color: #ff0000;
+}
+
+slider-control > .thumb {
+    width: 33px;
+    background-color: #0000ff;
+}
+
+.topBar {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+}
+
+#progressArc.fade,
+#contentContainer.fade {
+    opacity: 0;
+    -webkit-transition: opacity 0.25s linear;
+    -moz-transition: opacity 0.25s linear;
+    -o-transition: opacity 0.25s linear;
+    transition: opacity 0.25s linear;
+}
+
+#progressArc.fade.in {
+    opacity: 0.5;
+}
+
