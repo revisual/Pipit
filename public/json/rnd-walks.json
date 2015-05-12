@@ -12,6 +12,31 @@
       "id": "empty-moor-ghostly-light",
       "title": "Empty Moor Ghostly Light",
       "range": "0-31"
+    },
+    {
+      "id": "fluttering-wire",
+      "title": "fluttering barbed wire",
+      "range": "1-16"
+    },
+    {
+      "id": "plastic-hay",
+      "title": "black plastic hay",
+      "range": "1-17"
+    },
+    {
+      "id": "puddle-three",
+      "title": "puddle three",
+      "range": "1-11"
+    },
+    {
+      "id": "radio-bramble",
+      "title": "radio bramble",
+      "range": "1-33"
+    },
+    {
+      "id": "sprouts",
+      "title": "sprouts",
+      "range": "1-31"
     }
   ]
 }
