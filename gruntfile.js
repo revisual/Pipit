@@ -2,7 +2,7 @@ module.exports = function ( grunt ) {
    grunt.initConfig(
       {
          clean: {
-            all: ['public/json', 'public/css','public/fonts', 'public/partials', 'public/js']
+            all: ['public/json', 'public/css', 'public/fonts', 'public/partials', 'public/js']
          },
 
          copy: {
@@ -64,6 +64,32 @@ module.exports = function ( grunt ) {
                dest: 'public/partials/'
             }
 
+         },
+         mochaTest: {
+            test: {
+               options: {
+                  reporter: 'spec',
+                  captureFile: 'results.txt', // Optionally capture the reporter output to a file
+                  quiet: false, // Optionally suppress output to standard out (defaults to false)
+                  clearRequireCache: false, // Optionally clear the require cache before running tests (defaults to false)
+                  ui:'bdd'
+               },
+               src: [
+                  'test/server/preprocessor.spec.js'/*,
+                  'test/server/file-access.spec.js'*/
+                  /*'test/server/pipit-book-preprocessor.spec.js'*/
+               ]
+            }
+         } ,
+         karma: {
+           /* unit: {
+               configFile: 'karma.conf.js'
+            }   ,*/
+            continuous: {
+               configFile: 'karma.conf.js',
+               singleRun: true,
+               autoWatch: false
+            }
          }
 
       } );
@@ -73,7 +99,10 @@ module.exports = function ( grunt ) {
    grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
    grunt.loadNpmTasks( 'grunt-contrib-uglify' );
    grunt.loadNpmTasks( 'grunt-htmlclean' );
+   grunt.loadNpmTasks('grunt-mocha-test');
+   grunt.loadNpmTasks('grunt-karma');
 
 
-   grunt.registerTask( 'default', ['clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
+   grunt.registerTask( 'build', ['mochaTest', 'karma','clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
+   grunt.registerTask('tests', ['mochaTest', 'karma']);
 };

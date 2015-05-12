@@ -1,15 +1,21 @@
 module.exports = function ( config ) {
    config.set( {
       basePath: '',
-      frameworks: ['mocha', 'chai'],
+      frameworks: ['mocha', 'chai']/*,
+      plugins: [
+         'karma-chrome-launcher',
+         'karma-mocha',
+         'chai'
+
+      ]*/,
       files: [
          'node_modules/angular/angular.js',
          'node_modules/angular-mocks/angular-mocks.js',
          'node_modules/jquery/dist/jquery.js',
          'test/client/*.spec.js',
 
-         'public/js/signals.js',
-         'public/js/*.js'
+         'src/app/signals.js',
+         'src/app/*.js'
       ],
       port: 9876,
       colors: true,

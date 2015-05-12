@@ -2,7 +2,6 @@
 var expect = require( 'chai' ).expect;
 var Promise = require( 'promise' );
 var Processmap = (require( "../../scripts/preprocessor" ).PreProcessor);
-var mock = require( 'mock-fs' );
 
 
 describe( 'preprocessor', function () {
