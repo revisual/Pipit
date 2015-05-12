@@ -103,6 +103,7 @@ module.exports = function ( grunt ) {
    grunt.loadNpmTasks('grunt-karma');
 
 
+   grunt.registerTask( 'default', ['clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
    grunt.registerTask( 'build', ['mochaTest', 'karma','clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
    grunt.registerTask('tests', ['mochaTest', 'karma']);
 };
