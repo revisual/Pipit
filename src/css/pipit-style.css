@@ -140,15 +140,18 @@ slider-control {
     background-color: #ff00ff;
     position: relative;
     display: block;
+    border-radius: 22px;
 }
 
 slider-control > .fill {
     background-color: #ff0000;
+    border-radius: 22px;
 }
 
 slider-control > .thumb {
     width: 44px;
     background-color: #0000ff;
+    border-radius: 22px;
 }
 
 .topBar {

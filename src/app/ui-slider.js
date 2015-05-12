@@ -80,14 +80,14 @@
 
                var multiplier = (ngModel.$viewValue - min ) / (max - min);
 
-               var p = (_width - _thumbWidth) * multiplier
+               var p = (_width - _thumbWidth) * multiplier;
 
                _thumb.css( {
                   left: p + 'px'
                } );
 
                _fill.css( {
-                  width: _width - (_width - p) + 'px'
+                  width: _width - (_width - p - _thumbWidth) + 'px'
                } );
             };
 
@@ -150,7 +150,7 @@
                } );
 
                _fill.css( {
-                  width: _width - (_width - p) + 'px'
+                  width: _width - (_width - p - _thumbWidth ) + 'px'
                } );
 
 
