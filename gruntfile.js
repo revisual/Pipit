@@ -69,15 +69,13 @@ module.exports = function ( grunt ) {
             test: {
                options: {
                   reporter: 'spec',
-                  captureFile: 'results.txt', // Optionally capture the reporter output to a file
+                  /*captureFile: 'results.txt', // Optionally capture the reporter output to a file*/
                   quiet: false, // Optionally suppress output to standard out (defaults to false)
                   clearRequireCache: false, // Optionally clear the require cache before running tests (defaults to false)
                   ui:'bdd'
                },
                src: [
-                  'test/server/preprocessor.spec.js'/*,
-                  'test/server/file-access.spec.js'*/
-                  /*'test/server/pipit-book-preprocessor.spec.js'*/
+                  'test/server/*.js'
                ]
             }
          } ,
@@ -105,5 +103,5 @@ module.exports = function ( grunt ) {
 
    grunt.registerTask( 'default', ['clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
    grunt.registerTask( 'build', ['mochaTest', 'karma','clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
-   grunt.registerTask('tests', ['mochaTest', 'karma']);
+   grunt.registerTask('tests', ['mochaTest','karma']);
 };

@@ -1,7 +1,7 @@
 'use strict';
 angular.module( 'app.directives', [] )
 
-   .directive( 'trackPad', ['$swipe',function ( $swipe ) {
+   .directive( 'trackPad', ['$swipe', function ( $swipe ) {
 
       return {
          restrict: "E",
@@ -31,17 +31,15 @@ angular.module( 'app.directives', [] )
             };
 
 
-
             attrib.$observe( 'enabled', function ( value ) {
                if (value == 'true') enable();
                else disable();
             } );
 
 
-
             function enable() {
-              /* if (_enabled)return;
-               _enabled = true;*/
+               if (_enabled)return;
+               _enabled = true;
 
                if (_hasTouch) {
                   $swipe.bind( element, {start: start, move: move, end: end, cancel: end} );
@@ -53,8 +51,8 @@ angular.module( 'app.directives', [] )
             }
 
             function disable() {
-             /*  if (!_enabled)return;
-               _enabled = false;*/
+               if (!_enabled)return;
+               _enabled = false;
                if (_hasTouch) {
                   $swipe.unbind( element, {start: start, move: move, end: end, cancel: end} );
                }
@@ -120,7 +118,7 @@ angular.module( 'app.directives', [] )
 
          }
       }
-   } ])
+   }] )
 
    .directive( 'imageOverlay', [function () {
       return {
@@ -164,7 +162,7 @@ angular.module( 'app.directives', [] )
 
          }
       }
-   } ])
+   }] )
 
 
 ;

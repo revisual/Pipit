@@ -7,12 +7,12 @@ describe( 'Directives', function () {
          element;
 
       // Load the myApp module, which contains the directive
-      beforeEach( module( 'app.directives' ) );
+      beforeEach( angular.mock.module( 'app.directives' ) );
 
       beforeEach( function () {
          swipe = {};
 
-         module( function ( $provide ) {
+         angular.mock.module( function ( $provide ) {
             $provide.value( '$swipe', swipe );
          } );
 
@@ -24,7 +24,7 @@ describe( 'Directives', function () {
          // The injector unwraps the underscores (_) from around the parameter names when matching
          $compile = _$compile_;
          $rootScope = _$rootScope_;
-         element = $compile( "<track-pad></track-pad>" )( $rootScope );
+         element = $compile( "<track-pad enabled='true' touch-enabled='false'></track-pad>" )( $rootScope );
 
          $rootScope.$digest();
       } ) );
@@ -66,7 +66,6 @@ describe( 'Directives', function () {
       } );
 
       it( 'Sets scope.active to true on mousedown', function () {
-         $rootScope.trackPad.enable( false );
          $rootScope.$watch( 'active', function () {
             expect( $rootScope.active ).to.be.true;
          } );
@@ -75,7 +74,6 @@ describe( 'Directives', function () {
       } );
 
       it( 'Sets scope.active to false on mouseup', function () {
-         $rootScope.trackPad.enable( false );
          mouseDown( 20, 40 );
          $rootScope.$watch( 'active', function () {
             expect( $rootScope.active ).to.be.false;
@@ -86,72 +84,70 @@ describe( 'Directives', function () {
       } );
 
       it( 'Sets scope.previousPoint x and y values on mousedown', function () {
-         $rootScope.trackPad.enable( false );
          mouseDown( 10, 15 );
          expect( $rootScope.trackPad.previousPoint.x ).to.equal( 10 );
          expect( $rootScope.trackPad.previousPoint.y ).to.equal( 15 );
       } );
 
       it( 'Sets scope.distancePoint x and y values to 0 on mousedown', function () {
-         $rootScope.trackPad.enable( false );
          mouseDown( 10, 15 );
          expect( $rootScope.trackPad.distancePoint.x ).to.equal( 0 );
          expect( $rootScope.trackPad.distancePoint.y ).to.equal( 0 );
       } );
 
       it( 'Sets scope.distancePoint mx and my values to 0 on mousedown', function () {
-         $rootScope.trackPad.enable( false );
-         $rootScope.trackPad.distancePoint.mx = 55;
-         $rootScope.trackPad.distancePoint.my = 60;
-         mouseDown( 10, 15 );
-         expect( $rootScope.trackPad.distancePoint.mx ).to.equal( 0 );
-         expect( $rootScope.trackPad.distancePoint.my ).to.equal( 0 );
-      } );
+       element.attr('enabled', 'true');
+       $rootScope.trackPad.distancePoint.mx = 55;
+       $rootScope.trackPad.distancePoint.my = 60;
+       mouseDown( 10, 15 );
+       expect( $rootScope.trackPad.distancePoint.mx ).to.equal( 0 );
+       expect( $rootScope.trackPad.distancePoint.my ).to.equal( 0 );
+       } );
 
-      it( 'Sets scope.distancePoint x and y values on mousemove', function () {
-         $rootScope.trackPad.enable( false );
-         mouseDown( 10, 10 );
-         mouseMove( 60, 60 );
-         expect( $rootScope.trackPad.distancePoint.x ).to.equal( 50 );
-         expect( $rootScope.trackPad.distancePoint.y ).to.equal( 50 );
-      } );
+       it( 'Sets scope.distancePoint x and y values on mousemove', function () {
+       element.attr('enabled', 'true');
+       mouseDown( 10, 10 );
+       mouseMove( 60, 60 );
+       expect( $rootScope.trackPad.distancePoint.x ).to.equal( 50 );
+       expect( $rootScope.trackPad.distancePoint.y ).to.equal( 50 );
+       } );
 
-      it( 'Sets scope.previousPoint mx and my values on mousemove', function () {
-         $rootScope.trackPad.enable( false );
-         mouseDown( 10, 10 );
-         mouseMove( 30, 60 );
-         expect( $rootScope.trackPad.previousPoint.mx ).to.equal( 30 );
-         expect( $rootScope.trackPad.previousPoint.my ).to.equal( 60 );
-      } );
+       it( 'Sets scope.previousPoint mx and my values on mousemove', function () {
+       element.attr('enabled', 'true');
+       mouseDown( 10, 10 );
+       mouseMove( 30, 60 );
+       expect( $rootScope.trackPad.previousPoint.mx ).to.equal( 30 );
+       expect( $rootScope.trackPad.previousPoint.my ).to.equal( 60 );
+       } );
 
-      it( 'Sets scope.distancePoint mx and my values on mousemove', function () {
-         $rootScope.trackPad.enable( false );
-         mouseDown( 10, 10 );
-         mouseMove( 60, 60 );
-         mouseMove( 65, 65 );
-         expect( $rootScope.trackPad.distancePoint.mx ).to.equal( 5 );
-         expect( $rootScope.trackPad.distancePoint.my ).to.equal( 5 );
-      } );
+       it( 'Sets scope.distancePoint mx and my values on mousemove', function () {
+       element.attr('enabled', 'true');
+       mouseDown( 10, 10 );
+       mouseMove( 60, 60 );
+       mouseMove( 65, 65 );
+       expect( $rootScope.trackPad.distancePoint.mx ).to.equal( 5 );
+       expect( $rootScope.trackPad.distancePoint.my ).to.equal( 5 );
+       } );
 
-      it( 'Returns normalised metrics on normalise', function () {
-         $rootScope.trackPad.enable( false );
-         mouseDown( 10, 10 );
-         mouseMove( 35, 35 );
-         mouseMove( 60, 60 );
+       it( 'Returns normalised metrics on normalise', function () {
+       element.attr('enabled', 'true');
+       mouseDown( 10, 10 );
+       mouseMove( 35, 35 );
+       mouseMove( 60, 60 );
 
-         var n = $rootScope.trackPad.normalise(100,100);
+       var n = $rootScope.trackPad.normalise(100,100);
 
-         expect( n.firstTouchX ).to.equal( 10/100 );
-         expect( n.firstTouchY ).to.equal( 10/100 );
-         expect( n.lastTouchX ).to.equal( 60 / 100 );
-         expect( n.lastTouchY ).to.equal( 60 / 100 );
+       expect( n.firstTouchX ).to.equal( 10/100 );
+       expect( n.firstTouchY ).to.equal( 10/100 );
+       expect( n.lastTouchX ).to.equal( 60 / 100 );
+       expect( n.lastTouchY ).to.equal( 60 / 100 );
 
-         expect( n.distFromFirstX ).to.equal( 50/100 );
-         expect( n.distFromFirstY ).to.equal( 50/100 );
-         expect( n.distFromLastX ).to.equal( 25/100 );
-         expect( n.distFromLastY ).to.equal( 25/100 );
+       expect( n.distFromFirstX ).to.equal( 50/100 );
+       expect( n.distFromFirstY ).to.equal( 50/100 );
+       expect( n.distFromLastX ).to.equal( 25/100 );
+       expect( n.distFromLastY ).to.equal( 25/100 );
 
-      } );
+       } );
 
 
    } );

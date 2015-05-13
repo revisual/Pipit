@@ -26,7 +26,7 @@ describe( 'Directives', function () {
       it( 'Executing setImage Method applies url to background-image', function () {
          var URL = "myImage.jpg";
          $rootScope.imageOverlay["setTestImage"]( URL );
-         expect( element.css( 'background-image' ) ).to.equal( 'url(http://localhost:9876/' + URL + ')' );
+         expect( element.css( 'background-image' ) ).contains( URL );
          expect( element.css( 'opacity' ) ).to.equal( "" );
       } );
 
@@ -41,7 +41,7 @@ describe( 'Directives', function () {
          var URL = "myImage.jpg";
          var OPACITY = "0.5";
          $rootScope.imageOverlay["setTestImage"]( URL,OPACITY );
-         expect( element.css( 'background-image' ) ).to.equal( 'url(http://localhost:9876/' + URL + ')' );
+         expect( element.css( 'background-image' ) ).contains( URL );
          expect( element.css( 'opacity' ) ).to.equal( OPACITY );
       } );
 

@@ -2,7 +2,7 @@
 
 angular.module( 'app.services', [] )
 
-   .factory( 'WindowService', ['$window', function ( $window ) {
+   .factory( 'windowService', ['$window', function ( $window ) {
 
       var signal = new signals.Signal();
       var o = {
@@ -23,14 +23,14 @@ angular.module( 'app.services', [] )
 
    }] )
 
-   .factory( 'ImageSize', ['WindowService', function ( WindowService ) {
+   .factory( 'imageSize', ['windowService', function ( windowService ) {
 
       var minSizes = [768, 992, 1200];
       var imagesSizes = [768, 992, 1200, 992];
 
       return {
          getValue: function () {
-            var size = WindowService.width;
+            var size = windowService.width;
 
             var i = 0;
             do {
@@ -46,11 +46,11 @@ angular.module( 'app.services', [] )
       }
    }] )
 
-   .factory( 'API', ['$http', 'ImageSize', function ( $http, ImageSize ) {
+   .factory( 'API', ['$http', 'imageSize', function ( $http, imageSize ) {
 
       return {
          getBook: function ( project, book ) {
-            return $http.get( '/api-book/' + project + '/' + book + '/' + ImageSize.getValue() + '/' )
+            return $http.get( '/api-book/' + project + '/' + book + '/' + imageSize.getValue() + '/' )
                .then( function ( result ) {
                   return result.data;
                } );
