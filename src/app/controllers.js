@@ -50,10 +50,10 @@ module.controller( 'FullScreenCtrl', ['$scope', 'Fullscreen', 'Settings',
 
    }] );
 
-module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'WindowService',
-   function ( $scope, Settings, WindowService ) {
+module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
+   function ( $scope, Settings, windowService ) {
 
-      $scope.hasTouch = WindowService.hasTouch();
+      $scope.hasTouch = windowService.hasTouch();
       $scope.enabled = true;
 
       $scope.$watch( 'imageSize', function () {
@@ -65,10 +65,6 @@ module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'WindowService',
          Settings.sensitivity = $scope.sensitivity;
       } );
 
-      $scope.$watch( 'drag', function () {
-         Settings.drag = $scope.drag;
-      } );
-
 
       $scope.imageSize = Settings.imageSize;
       $scope.imageSizeSliderValues = Settings.imageSizeSliderValues;
@@ -76,18 +72,34 @@ module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'WindowService',
       $scope.sensitivity = Settings.sensitivity;
       $scope.sensitivitySliderValues = Settings.sensitivitySliderValues;
 
-      $scope.drag = Settings.drag;
-      $scope.dragSliderValues = Settings.dragSliderValues;
+
+   }] );
+
+module.controller( 'ScrollCtrl', ['$scope',
+   function ( $scope ) {
+      $scope.scrollProperties = {ratio: 0.25, position: 1};
+   }] );
+
+module.controller( 'ImageSizeCtrl', ['$scope', 'Settings', 'windowService',
+   function ( $scope, Settings, windowService ) {
+
+      $scope.checkModel = Settings.sizes;
+
+      $scope.radioModel = Settings.currentSize;
+
+      $scope.$watch( 'radioModel', function () {
+         Settings.currentSize = $scope.radioModel;
+      } );
 
 
    }] );
 
-module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'WindowService',
-   function ( $scope, BookService, Settings, WindowService ) {
+module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowService',
+   function ( $scope, BookService, Settings, windowService ) {
 
       BookService.reset();
 
-      $scope.hasTouch = WindowService.hasTouch();
+      $scope.hasTouch = windowService.hasTouch();
 
 
       BookService.progress.add( function ( current, total ) {
@@ -111,7 +123,7 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'WindowServ
       } );
 
       BookService.tick.add( function ( adjust ) {
-         var o = adjust( $scope.trackPad.normalise( WindowService.width / Settings.sensitivity, 1 ).distFromLastX );
+         var o = adjust( $scope.trackPad.normalise( (windowService.width / Settings.sensitivity) * BookService.getNumberFrames(), 1 ).distFromLastX );
          var overlay = $scope.imageOverlay;
          overlay.setBottomImage( o.baseURL );
          overlay.setTopImage( o.overlayURL, o.overlayOpacity );

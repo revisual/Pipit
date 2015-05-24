@@ -60,6 +60,7 @@ angular.module( 'app.directives', [] )
                else {
                   element.off( 'mousedown', mouseDown );
                   element.off( 'mousemove', mouseMove );
+                  element.off( 'mouseout', mouseEnd );
                   element.off( 'mouseup', mouseEnd );
                }
             }
@@ -72,6 +73,7 @@ angular.module( 'app.directives', [] )
 
                element.on( 'mousemove', mouseMove );
                element.on( 'mouseup', mouseEnd );
+               element.on( 'mouseout', mouseEnd );
 
             }
 
@@ -80,8 +82,10 @@ angular.module( 'app.directives', [] )
             }
 
             function mouseEnd() {
-               element.unbind( 'mousemove', mouseMove );
-               element.unbind( 'mouseup', mouseEnd );
+               console.log("off")
+               element.off( 'mousemove', mouseMove );
+               element.off( 'mouseout', mouseEnd );
+               element.off( 'mouseup', mouseEnd );
                end()
             }
 

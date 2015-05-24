@@ -8,7 +8,8 @@ var module = angular.module( 'app',
       'angular-progress-arc',
       'FBAngular',
       'angular-animation-frame',
-      'angular-slider'
+      'angular-slider',
+      'angular-scroll-indicator'
    ] );
 
 module.config( ['$routeProvider', '$locationProvider',

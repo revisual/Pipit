@@ -13,7 +13,26 @@
         <div class="col-md-6">
 
 
+
             <accordion close-others="true">
+
+                <accordion-group is-open="status.open">
+                    <accordion-heading>
+
+                        Settings
+
+                    </accordion-heading>
+
+
+                    <div class="btn-group" ng-controller="ImageSizeCtrl">
+                        <label  ng-repeat="(key, value) in checkModel" class="btn btn-primary"
+                                ng-model="$parent.radioModel" btn-radio="'{{key}}'">{{key}}
+                        </label>
+                      <!--  <label ng-repeat='option in options' class="btn btn-danger" ng-model="$parent.radioModel2" btn-radio="'{{option}}'" uncheckable>{{option}}</label>-->
+
+                    </div>
+
+                </accordion-group>
 
                 <accordion-group ng-repeat="project in projects">
                     <accordion-heading>

@@ -61,6 +61,7 @@
                   element.off( 'mousedown', mouseDown );
                   element.off( 'mousemove', mouseMove );
                   element.off( 'mouseup', mouseEnd );
+                  element.off( 'mouseout', mouseEnd );
                }
             };
 
@@ -109,6 +110,7 @@
 
                element.on( 'mousemove', mouseMove );
                element.on( 'mouseup', mouseEnd );
+               element.on( 'mouseout', mouseEnd );
 
             }
 
@@ -117,8 +119,9 @@
             }
 
             function mouseEnd() {
-               element.unbind( 'mousemove', mouseMove );
-               element.unbind( 'mouseup', mouseEnd );
+               element.off( 'mousemove', mouseMove );
+               element.off( 'mouseup', mouseEnd );
+               element.off( 'mouseout', mouseEnd );
                end()
             }
 

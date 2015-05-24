@@ -23,25 +23,29 @@ angular.module( 'app.services', [] )
 
    }] )
 
-   .factory( 'imageSize', ['windowService', function ( windowService ) {
+   .factory( 'imageSize', ['Settings', 'windowService', function ( Settings, windowService ) {
 
-      var minSizes = [768, 992, 1200];
-      var imagesSizes = [768, 992, 1200, 992];
 
       return {
          getValue: function () {
-            var size = windowService.width;
 
-            var i = 0;
-            do {
-               if (size < minSizes[i]) {
-                  return imagesSizes[i];
-               }
-               i++;
-            } while (i < minSizes.length) ;
+            var sizes = Settings.sizes;
+            var currentSize = Settings.currentSize;
+            var value = sizes[currentSize];
+
+            if( value == 'auto'){
+               var windowSize = windowService.width;
+               if( windowSize <= sizes.xsmall)return  sizes.xsmall;
+               if( windowSize <= sizes.small)return  sizes.small;
+               if( windowSize <= sizes.medium)return  sizes.medium;
+               if( windowSize <= sizes.large)return  sizes.large;
+               if( windowSize <= sizes.xlarge)return  sizes.xlarge;
+            }
+            return  value;
 
 
-            return imagesSizes[imagesSizes.length - 1];
+
+
          }
       }
    }] )
@@ -82,7 +86,7 @@ angular.module( 'app.services', [] )
    }] )
 
    //todo - pull out the tick stuff into its own service
-   .factory( 'BookService', ['$location','animationFrame','API','imageService', 'Settings', function ( $location, animationFrame, API, imageService, Settings ) {
+   .factory( 'BookService', ['$location', 'animationFrame', 'API', 'imageService', 'Settings', function ( $location, animationFrame, API, imageService, Settings ) {
 
       var NULL_RETURN = {baseURL: null, overlayURL: null, overlayOpacity: -1};
       var _tick = new signals.Signal();
@@ -209,6 +213,7 @@ angular.module( 'app.services', [] )
          resolve: imageService.on.resolve,
          progress: imageService.on.progress,
          complete: imageService.on.complete,
+         getNumberFrames:function(){return imageService.totalNumberImages} ,
          start: start,
          tick: _tick,
          end: end,
@@ -216,15 +221,17 @@ angular.module( 'app.services', [] )
          reset: reset
       }
 
-   } ])
+   }] )
 
    .factory( 'Settings', function () {
 
 
       return {
+         currentSize: 'auto',
+         sizes: {xsmall: 480, small: 768, medium: 992, large: 1200, xlarge: 1620, auto: 'auto'},
          fullscreen: false,
-         sensitivity: 4,
-         sensitivitySliderValues: {min: 0.5, max: 10, step: 0.5},
+         sensitivity: 33,
+         sensitivitySliderValues: {min: 1, max: 200, step: 1},
          drag: 0.5,
          dragSliderValues: {min: 0.1, max: 1.0, step: 0.1},
          imageSize: 110,
@@ -242,8 +249,8 @@ angular.module( 'app.services', [] )
 
       }
 
-   }   )
-   . value( 'imageService', new ImageListLoader() );
+   } )
+   .value( 'imageService', new ImageListLoader() );
 
 
 
