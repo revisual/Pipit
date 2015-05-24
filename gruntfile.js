@@ -91,12 +91,41 @@ module.exports = function ( grunt ) {
          },
          bump: {
 
-               options: {
-                  files: ['package.json'],
-                  push: true,
-                  pushTo: 'origin'
-               }
+            options: {
+               createTag: false,
+               commit: true,
+               commitMessage: 'Release v%VERSION%',
+               commitFiles: ['package.json'],
+               push: false
+            }
 
+         },
+         gitcheckout: {
+            master: {
+               options: {
+                  branch: 'master'
+               }
+            },
+            development: {
+               options: {
+                  branch: 'development'
+               }
+            }
+         },
+         gitmerge: {
+            development: {
+               options: {
+                  branch: 'development',
+                  message: 'merging from development'
+               }
+            }
+         },
+         gitpush: {
+            tracked: {
+               options: {
+                  remote: 'origin'
+               }
+            }
          }
 
       } );
@@ -109,10 +138,12 @@ module.exports = function ( grunt ) {
    grunt.loadNpmTasks( 'grunt-mocha-test' );
    grunt.loadNpmTasks( 'grunt-karma' );
    grunt.loadNpmTasks( 'grunt-bump' );
+   grunt.loadNpmTasks( 'grunt-git' );
 
 
-   grunt.registerTask( 'default', ['clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
-   grunt.registerTask( 'build', ['mochaTest', 'karma', 'clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
+
+   grunt.registerTask( 'deploy', ['localBuild','bump', "mergeAndPush"] );
+   grunt.registerTask( 'localBuild', ['tests', 'clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
    grunt.registerTask( 'tests', ['mochaTest', 'karma'] );
-   grunt.registerTask( 'pushDev', ['bump'] );
+   grunt.registerTask( 'mergeAndPush', ['gitcheckout:master','gitmerge:development','gitpush:tracked', 'gitcheckout:development'] );
 };
