@@ -65,7 +65,6 @@ module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
          Settings.sensitivity = $scope.sensitivity;
       } );
 
-
       $scope.imageSize = Settings.imageSize;
       $scope.imageSizeSliderValues = Settings.imageSizeSliderValues;
 
@@ -123,7 +122,7 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
       } );
 
       BookService.tick.add( function ( adjust ) {
-         var o = adjust( $scope.trackPad.normalise( (windowService.width / Settings.sensitivity) * BookService.getNumberFrames(), 1 ).distFromLastX );
+         var o = adjust( $scope.trackPad.normalise( (windowService.width / Settings.sensitivity) * BookService.data.totalPages, 1 ).distFromLastX );
          var overlay = $scope.imageOverlay;
          overlay.setBottomImage( o.baseURL );
          overlay.setTopImage( o.overlayURL, o.overlayOpacity );

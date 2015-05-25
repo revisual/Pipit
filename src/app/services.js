@@ -90,15 +90,18 @@ angular.module( 'app.services', [] )
 
       var NULL_RETURN = {baseURL: null, overlayURL: null, overlayOpacity: -1};
       var _tick = new signals.Signal();
-      var _pageValues = {page: 0, remainder: 0};
-      var _overlayData = {
+
+      var _pageData = {
          isComplete: function () {
             var cV = Math.round( this.currentValue * 1000 );
             var tV = Math.round( this.targetValue * 1000 );
             return cV === tV;
          },
          reset: function () {
+            this.totalPages = 0;
+            this.currentPage = 0;
             this.currentValue = 0;
+            this.currentAlpha = 0;
             this.targetValue = 0;
             this.baseURL = null;
             this.overlayURL = null;
@@ -107,7 +110,34 @@ angular.module( 'app.services', [] )
          backToBase: function () {
             this.targetValue = this.currentValue;
          },
+         applyValue:function (value) {
+            var newValue = this.targetValue + value;
+            if (newValue > 0 && newValue < 1) {
+               this.targetValue += value;
+            }
+            this.currentValue += (this.targetValue - this.currentValue) * Settings.drag;
+            var v = this.currentValue * this.totalPages;
+            this.currentPage = Math.floor( v );
+            this.currentAlpha = v - this.currentPage;
+         },
+         applyUrls:function(imageService){
+            var overlayIndex = this.currentPage + 1;
+            var nextBase = imageService.images[this.currentPage].src;
+            this.currentPage = imageService.totalNumberImages;
 
+            if (overlayIndex >= imageService.images.length) {
+               overlayIndex = _pageData.currentPage;
+            }
+
+            var nextOverlay = imageService.images[overlayIndex].src;
+
+            this.baseURL = (this.baseURL == nextBase) ? null : nextBase;
+            this.overlayURL = (this.overlayURL == nextOverlay) ? null : nextOverlay;
+            this.overlayOpacity = this.currentAlpha;
+         }  ,
+         totalPages: 0,
+         currentPage: 0,
+         currentAlpha:0,
          currentValue: 0,
          targetValue: 0,
          baseURL: null,
@@ -129,13 +159,14 @@ angular.module( 'app.services', [] )
       };
 
       var start = function () {
+         _pageData.totalPages = imageService.totalNumberImages;
          _permissionToEnd = false;
          if (!_active) {
             _active = true;
             _update();
          }
          else {
-            _overlayData.backToBase();
+            _pageData.backToBase();
          }
       };
 
@@ -150,45 +181,17 @@ angular.module( 'app.services', [] )
          clearTimeout( _stopTimeOut );
       };
 
-
       var adjustMultiplier = function ( value ) {
          if (isNaN( value ))return NULL_RETURN;
-         var newValue = _overlayData.targetValue + value;
-         if (newValue > 0 && newValue < 1) {
-            _overlayData.targetValue += value;
-         }
 
-         applyValue();
+         _pageData.applyValue(value);
+         _pageData.applyUrls(imageService);
 
-
-         var overlayIndex = _pageValues.page + 1;
-         var nextBase = imageService.images[_pageValues.page].src;
-
-
-         if (overlayIndex >= imageService.images.length) {
-            overlayIndex = _pageValues.page;
-         }
-
-         var nextOverlay = imageService.images[overlayIndex].src;
-
-         _overlayData.baseURL = (_overlayData.baseURL == nextBase) ? null : nextBase;
-         _overlayData.overlayURL = (_overlayData.overlayURL == nextOverlay) ? null : nextOverlay;
-         _overlayData.overlayOpacity = _pageValues.remainder;
-
-
-         if (_permissionToEnd && _overlayData.isComplete()) {
+         if (_permissionToEnd && _pageData.isComplete()) {
             kill();
          }
 
-         return _overlayData;
-      };
-
-
-      var applyValue = function () {
-         _overlayData.currentValue += (_overlayData.targetValue - _overlayData.currentValue) * Settings.drag;
-         var v = _overlayData.currentValue * imageService.totalNumberImages;
-         _pageValues.page = Math.floor( v );
-         _pageValues.remainder = v - _pageValues.page;
+         return _pageData;
       };
 
       var load = function () {
@@ -203,7 +206,7 @@ angular.module( 'app.services', [] )
 
       var reset = function () {
          kill();
-         _overlayData.reset();
+         _pageData.reset();
          imageService.on.removeAll();
          _tick.removeAll();
       };
@@ -213,7 +216,7 @@ angular.module( 'app.services', [] )
          resolve: imageService.on.resolve,
          progress: imageService.on.progress,
          complete: imageService.on.complete,
-         getNumberFrames:function(){return imageService.totalNumberImages} ,
+         data:_pageData,
          start: start,
          tick: _tick,
          end: end,
@@ -224,7 +227,6 @@ angular.module( 'app.services', [] )
    }] )
 
    .factory( 'Settings', function () {
-
 
       return {
          currentSize: 'auto',
