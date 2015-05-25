@@ -86,12 +86,10 @@ angular.module( 'app.services', [] )
    }] )
 
    //todo - pull out the tick stuff into its own service
-   .factory( 'BookService', ['$location', 'animationFrame', 'API', 'imageService', 'Settings', function ( $location, animationFrame, API, imageService, Settings ) {
+   .factory( 'bookData', [ 'Settings', function (  Settings ) {
 
-      var NULL_RETURN = {baseURL: null, overlayURL: null, overlayOpacity: -1};
-      var _tick = new signals.Signal();
 
-      var _pageData = {
+      return  {
          isComplete: function () {
             var cV = Math.round( this.currentValue * 1000 );
             var tV = Math.round( this.targetValue * 1000 );
@@ -121,12 +119,12 @@ angular.module( 'app.services', [] )
             this.currentAlpha = v - this.currentPage;
          },
          applyUrls:function(imageService){
+
             var overlayIndex = this.currentPage + 1;
             var nextBase = imageService.images[this.currentPage].src;
-            this.currentPage = imageService.totalNumberImages;
 
             if (overlayIndex >= imageService.images.length) {
-               overlayIndex = _pageData.currentPage;
+               overlayIndex = this.currentPage;
             }
 
             var nextOverlay = imageService.images[overlayIndex].src;
@@ -144,7 +142,15 @@ angular.module( 'app.services', [] )
          overlayURL: null,
          overlayOpacity: -1
       };
-      var _active;
+
+
+   }] )
+
+   .factory( 'BookService', ['$location', 'animationFrame', 'bookData','API', 'imageService', 'Settings', function ( $location, animationFrame, bookData,API, imageService, Settings ) {
+
+      var NULL_RETURN = {baseURL: null, overlayURL: null, overlayOpacity: -1};
+      var _tick = new signals.Signal();
+            var _active;
       var _permissionToEnd = false;
       var _stopTimeOut;
 
@@ -159,14 +165,14 @@ angular.module( 'app.services', [] )
       };
 
       var start = function () {
-         _pageData.totalPages = imageService.totalNumberImages;
+         bookData.totalPages = imageService.totalNumberImages;
          _permissionToEnd = false;
          if (!_active) {
             _active = true;
             _update();
          }
          else {
-            _pageData.backToBase();
+            bookData.backToBase();
          }
       };
 
@@ -174,7 +180,6 @@ angular.module( 'app.services', [] )
          _permissionToEnd = true;
       };
 
-      _active = true;
       var kill = function () {
          _active = false;
          _permissionToEnd = false;
@@ -184,14 +189,14 @@ angular.module( 'app.services', [] )
       var adjustMultiplier = function ( value ) {
          if (isNaN( value ))return NULL_RETURN;
 
-         _pageData.applyValue(value);
-         _pageData.applyUrls(imageService);
+         bookData.applyValue(value);
+         bookData.applyUrls(imageService);
 
-         if (_permissionToEnd && _pageData.isComplete()) {
+         if (_permissionToEnd && bookData.isComplete()) {
             kill();
          }
 
-         return _pageData;
+         return bookData;
       };
 
       var load = function () {
@@ -206,7 +211,7 @@ angular.module( 'app.services', [] )
 
       var reset = function () {
          kill();
-         _pageData.reset();
+         bookData.reset();
          imageService.on.removeAll();
          _tick.removeAll();
       };
@@ -216,7 +221,7 @@ angular.module( 'app.services', [] )
          resolve: imageService.on.resolve,
          progress: imageService.on.progress,
          complete: imageService.on.complete,
-         data:_pageData,
+         data:bookData,
          start: start,
          tick: _tick,
          end: end,
