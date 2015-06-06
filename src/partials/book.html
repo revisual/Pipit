@@ -12,14 +12,14 @@
 <scroll-indicator ng-controller="ScrollCtrl" ng-model="scrollProperties"></scroll-indicator>
 <div class="topBar" ng-controller="FullScreenCtrl">
 
-    <label class="btn btn-xlg">
+    <label class="btn btn-lg">
         <a href="" ng-click="toggle()">
                 <span class="glyphicon"
                       ng-class="{'glyphicon-resize-full':!fullscreen,'glyphicon-resize-small':fullscreen}"
                       aria-hidden="true"></span>
         </a>
     </label>
-    <label class="btn btn-xlg"><a href="/"> <span class="glyphicon glyphicon-remove"
+    <label class="btn btn-lg"><a href="/"> <span class="glyphicon glyphicon-remove"
                                                   aria-hidden="true"></span></a></label>
 </div>
 
@@ -28,7 +28,7 @@
         <accordion-group is-open="status.open">
             <accordion-heading>
 
-                <label class="btn btn-xlg">
+                <label class="btn btn-lg">
                     <a href="">
                 <span class="glyphicon"
                       ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"

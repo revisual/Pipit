@@ -143,7 +143,7 @@ module.exports = function ( grunt ) {
 
 
    grunt.registerTask( 'deploy', ['localBuild','bump', "mergeAndPush"] );
-   grunt.registerTask( 'localBuild', ['tests', 'clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
+   grunt.registerTask( 'localBuild', [/*'tests',*/ 'clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
    grunt.registerTask( 'tests', ['mochaTest', 'karma'] );
    grunt.registerTask( 'mergeAndPush', ['gitcheckout:master','gitmerge:development','gitpush:tracked', 'gitcheckout:development'] );
 };

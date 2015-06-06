@@ -1,3 +1,4 @@
+
 <div class="banner">
     <div class="container">
         <h1>FLICKERS<span class="small"> beta</span></h1>
@@ -11,9 +12,7 @@
             INFO
         </div>
         <div class="col-md-6">
-
-
-
+           <!-- <div >Long:{{position.coords.longitude}}, Lat:{{position.coords.latitude}} CountCoords:{{count}}</div>-->
             <accordion close-others="true">
 
                 <accordion-group is-open="status.open">
@@ -25,6 +24,7 @@
 
 
                     <div class="btn-group" ng-controller="ImageSizeCtrl">
+
                         <label  ng-repeat="(key, value) in checkModel" class="btn btn-primary"
                                 ng-model="$parent.radioModel" btn-radio="'{{key}}'">{{key}}
                         </label>
@@ -43,8 +43,8 @@
                            class="list-group-item"
                            ng-repeat="book in project.content"
                            ng-if="!book.hide"
-                                >
-                            <img ng-src="{{book.thumb}}" class="thumb">{{book.title}}
+                           ng-class="{red:book.active}" >
+                            <img ng-src="{{book.thumb}}" class="thumb">{{book.title}} {{book.active}}
                         </a>
                     </div>
                 </accordion-group>

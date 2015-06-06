@@ -1,92 +1,108 @@
 {
-   "title": "R&D walks ",
-   "id": "rnd-walks",
-   "index": 3,
-   "content": [
-      {
-         "id": "crying-in-his-arms",
-         "title": "crying-in-his-arms",
-         "range": "0-17",
-         "sizes": {
-            "xsmall": 38938.88888888889,
-            "small": 68378.44444444444,
-            "medium": 328301.55555555556,
-            "large": 328301.55555555556,
-            "xlarge": 328301.55555555556
-         }
+  "title": "R&D walks ",
+  "id": "rnd-walks",
+  "index": 3,
+  "content": [
+    {
+      "id": "crying-in-his-arms",
+      "title": "crying-in-his-arms",
+      "range": "0-17",
+      "position": {
+        "lat": 50.8463,
+        "long": -0.1333
       },
-      {
-         "id": "empty-moor-ghostly-light",
-         "title": "empty moor ghostly light",
-         "range": "0-31",
-         "sizes": {
-            "xsmall": 32783.25,
-            "small": 53328.9375,
-            "medium": 268841.3125,
-            "large": 268841.3125,
-            "xlarge": 268841.3125
-         }
-      },
-      {
-         "id": "fluttering-wire",
-         "title": "fluttering wire",
-         "range": "1-16",
-         "sizes": {
-            "xsmall": 20216.6875,
-            "small": 27287.8125,
-            "medium": 33644.6875,
-            "large": 39989.625,
-            "xlarge": 55376.1875
-         }
-      },
-      {
-         "id": "plastic-hay",
-         "title": "black plastic hay",
-         "range": "1-17",
-         "sizes": {
-            "xsmall": 21770.235294117647,
-            "small": 35487.05882352941,
-            "medium": 49968.470588235294,
-            "large": 65837.82352941176,
-            "xlarge": 105559.23529411765
-         }
-      },
-      {
-         "hide": "true",
-         "id": "puddle-three",
-         "title": "puddle three",
-         "range": "1-11",
-         "sizes": {
-            "xsmall": 38478.09090909091,
-            "small": 69603.72727272728,
-            "large": 143448.36363636365,
-            "medium": 104225.72727272728,
-            "xlarge": 244475.36363636365
-         }
-      },
-      {
-         "id": "radio-bramble",
-         "title": "radio bramble",
-         "range": "1-33",
-         "sizes": {
-            "xsmall": 28942.303030303032,
-            "small": 39664.72727272727,
-            "medium": 49324.42424242424,
-            "large": 59190.48484848485,
-            "xlarge": 82581.84848484848
-         }
-      },
-      {
-         "id": "sprouts",
-         "title": "sprouts",
-         "range": "1-31",
-         "sizes": {
-            "xsmall": 34601.87096774193,
-            "small": 51528.354838709674,
-            "medium": 66948.35483870968,
-            "large": 82124.80645161291,
-            "xlarge": 117274.06451612903
-         }
+      "sizes": {
+        "xsmall": 38938.88888888889,
+        "small": 68378.44444444444,
+        "medium": 328301.55555555556,
+        "large": 328301.55555555556,
+        "xlarge": 328301.55555555556
       }
-   ]
+    },
+    {
+      "id": "empty-moor-ghostly-light",
+      "title": "empty moor ghostly light",
+      "range": "0-31",
+      "position": {
+        "lat": 50.8464,
+        "long": -0.1326
+      },
+      "sizes": {
+        "xsmall": 32783.25,
+        "small": 53328.9375,
+        "medium": 268841.3125,
+        "large": 268841.3125,
+        "xlarge": 268841.3125
+      }
+    },
+    {
+      "id": "fluttering-wire",
+      "title": "fluttering wire",
+      "range": "1-16",
+      "position": {
+        "lat": 50.8474,
+        "long": -0.1329
+      },
+      "sizes": {
+        "xsmall": 20216.6875,
+        "small": 27287.8125,
+        "medium": 33644.6875,
+        "large": 39989.625,
+        "xlarge": 55376.1875
+      }
+    },
+    {
+      "id": "plastic-hay",
+      "title": "black plastic hay",
+      "range": "1-17",
+      "position": {
+        "lat": 50.8458,
+        "long": -0.1335
+      },
+      "sizes": {
+        "xsmall": 21770.235294117647,
+        "small": 35487.05882352941,
+        "medium": 49968.470588235294,
+        "large": 65837.82352941176,
+        "xlarge": 105559.23529411765
+      }
+    },
+    {
+      "hide": "true",
+      "id": "puddle-three",
+      "title": "puddle three",
+      "range": "1-11",
+      "sizes": {
+        "xsmall": 38478.09090909091,
+        "small": 69603.72727272728,
+        "large": 143448.36363636365,
+        "medium": 104225.72727272728,
+        "xlarge": 244475.36363636365
+      }
+    },
+    {
+      "id": "radio-bramble",
+      "title": "radio bramble",
+      "range": "1-33",
+      "sizes": {
+        "xsmall": 28942.303030303032,
+        "small": 39664.72727272727,
+        "medium": 49324.42424242424,
+        "large": 59190.48484848485,
+        "xlarge": 82581.84848484848
+      }
+    },
+    {
+      "id": "sprouts",
+      "title": "sprouts",
+      "range": "1-31",
+      "sizes": {
+        "xsmall": 34601.87096774193,
+        "small": 51528.354838709674,
+        "medium": 66948.35483870968,
+        "large": 82124.80645161291,
+        "xlarge": 117274.06451612903
+      }
+    }
+  ]
 }

@@ -88,7 +88,6 @@ angular.module( 'app.services', [] )
    //todo - pull out the tick stuff into its own service
    .factory( 'bookData', [ 'Settings', function (  Settings ) {
 
-
       return  {
          isComplete: function () {
             var cV = Math.round( this.currentValue * 1000 );
@@ -146,7 +145,7 @@ angular.module( 'app.services', [] )
 
    }] )
 
-   .factory( 'BookService', ['$location', 'animationFrame', 'bookData','API', 'imageService', 'Settings', function ( $location, animationFrame, bookData,API, imageService, Settings ) {
+   .factory( 'BookService', ['$location', 'animationFrame', 'bookData','API', 'imageService', 'Settings', function ( $location, animationFrame, bookData,API, imageService ) {
 
       var NULL_RETURN = {baseURL: null, overlayURL: null, overlayOpacity: -1};
       var _tick = new signals.Signal();
@@ -216,7 +215,6 @@ angular.module( 'app.services', [] )
          _tick.removeAll();
       };
 
-
       return {
          resolve: imageService.on.resolve,
          progress: imageService.on.progress,
@@ -239,7 +237,7 @@ angular.module( 'app.services', [] )
          fullscreen: false,
          sensitivity: 33,
          sensitivitySliderValues: {min: 1, max: 200, step: 1},
-         drag: 0.5,
+         drag: 0.25,
          dragSliderValues: {min: 0.1, max: 1.0, step: 0.1},
          imageSize: 110,
          imageSizeSliderValues: {min: 50, max: 110, step: 1},
