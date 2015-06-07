@@ -201,7 +201,7 @@ angular.module( 'app.services', [] )
       var load = function () {
 
          var search = $location.search();
-         API.getBook( search.project, search.book )
+         API.getBook( search.projects, search.book )
             .then( function ( data ) {
                imageService.resetWith( data.book.imageURLs );
                imageService.start();
