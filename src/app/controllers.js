@@ -1,8 +1,8 @@
 'use strict';
 var module = angular.module( "app.controllers", [] );
 
-module.controller( 'MenuCtrl', ['$scope', '$location', 'API'/*, '$geolocation'*/,
-   function ( $scope, $location, API/*, $geolocation */) {
+module.controller( 'MenuCtrl', ['$scope', '$location', 'API',
+   function ( $scope, $location, API ) {
 
       var search = $location.search();
       $scope.partial = (search.partial === undefined) ? "partials/default.html" : "partials/" + search.partial + ".html";
@@ -11,61 +11,14 @@ module.controller( 'MenuCtrl', ['$scope', '$location', 'API'/*, '$geolocation'*/
          .then( function ( data ) {
             $scope.projects = data.projects;
 
-
-
-
          } );
-
-     /* $geolocation.watchPosition( {
-         timeout: 5000,
-         maximumAge: 5000,
-         enableHighAccuracy: true
-      } );
-
-      $scope.position = $geolocation.position;
-      $scope.coordsError = $geolocation.position.error;
-      $scope.count = 0;
-
-
-
-      $scope.$watch( "position.coords", function ( newVal, oldVal ) {
-         if($scope.projects == null)return;
-         $scope.count++;
-         var books =  $scope.projects[2].content;
-
-         for ( var book in books){
-            if( books[book].position.lat == Math.round($geolocation.position.coords.latitude * 1000)/1000
-               && books[book].position.long == Math.round($geolocation.position.coords.longitude * 1000)/1000) {
-               books[book].active = true;
-            }
-            else{
-               books[book].active = false;
-            }
-         }
-
-
-      } );*/
-
-
 
 
    }] );
 
-/*module.controller( 'golocationCtrl', ['$scope', '$geolocation',
-   function ( $scope, $geolocation ) {
 
-
-
-      *//*
-       $scope.$watch("coordsError", function(newVal, oldVal){
-       console.log(" coordsError " + newVal)
-       })*//*
-
-   }] );*/
-
-
-module.controller( 'FullScreenCtrl', ['$scope', 'Fullscreen', 'Settings',
-   function ( $scope, Fullscreen, Settings ) {
+module.controller( 'FullScreenCtrl', ['$scope', '$location', '$route', 'Fullscreen', 'Settings',
+   function ( $scope, $location, $route, Fullscreen, Settings ) {
 
       $scope.toggle = function () {
          if (Fullscreen.isEnabled()) {
@@ -96,7 +49,13 @@ module.controller( 'FullScreenCtrl', ['$scope', 'Fullscreen', 'Settings',
          $scope.fullscreen = Settings.fullscreen;
       };
 
+      $scope.backToMenu = function () {
+         $location.path( '/' );
+         $route.reload();
+      };
+
       $scope.fullscreen = Settings.fullscreen;
+
 
    }] );
 

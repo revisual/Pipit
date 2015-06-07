@@ -10,7 +10,6 @@ var module = angular.module( 'app',
       'angular-animation-frame',
       'angular-slider',
       'angular-scroll-indicator'
-     /* ,'ngGeolocation'*/
    ] );
 
 module.config( ['$routeProvider', '$locationProvider',
