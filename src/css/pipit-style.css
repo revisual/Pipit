@@ -66,6 +66,16 @@ h1 {
     margin-bottom: 0px;
 }
 
+.list-group-item{
+    background-color: transparent;
+    border:none;
+}
+a.list-group-item:focus, a.list-group-item:hover {
+
+
+    background-color: rgba(255,255,255,.1);
+}
+
 .red {
     color: red;
 }
@@ -110,11 +120,15 @@ a:focus, a:hover {
     background-color: rgba(0,0,0,.33);
 }
 
+img{
+    padding-right: 5px;
+}
+
 
 .panel-default>.panel-heading {
-    color: #333;
     background-color: transparent!important;
     border: hidden;
+    padding: 5px;
 }
 
 .banner {

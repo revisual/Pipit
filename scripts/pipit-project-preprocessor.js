@@ -30,6 +30,12 @@ module.exports = function ( jsonPath, imagePath ) {
          // load in file content
          file.readFilesFromList( data.projects )
             .then( function ( files ) {
+
+
+               files.forEach(function(item,index, array){
+                  addThumbs( item );
+               });
+
                data.files = files;
                done();
             } )
@@ -51,14 +57,12 @@ module.exports = function ( jsonPath, imagePath ) {
 
                // filter out items marked as private
                files = files.filter( function ( item, i, a ) {
-                  var returnVal = (item.private == undefined || item.private == false);
-                  if (returnVal && !(item instanceof Error)) {
-                     // add thumbs
-                     addThumbs( item );
-
-                  }
-                  return returnVal;
+                  return (item.private == undefined || item.private == false);
                } );
+
+               files.forEach(function(item,index, array){
+                  addThumbs( item );
+               });
 
                // sort by item index
                files.sort( function ( a, b ) {

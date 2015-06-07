@@ -46,6 +46,7 @@ module.exports = function ( grunt ) {
                   'src/app/angular-animation-frame.js',
                   'src/app/angular-fullscreen.js',
                   'src/app/controllers.js',
+                  'src/app/ui-scroll-indicator.js',
                   'src/app/ui-slider.js',
                   'src/app/directives.js',
                   'src/app/app.js'
