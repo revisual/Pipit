@@ -1,0 +1,43 @@
+{
+   "title": "Shoreham Bridge",
+   "id": "shoreham",
+   "index": 0,
+   "content": [
+      {
+         "id": "fishes",
+         "title": "fishes",
+         "range": "0-80",
+         "sizes": {
+            "xsmall": 3689516,
+            "small": 6744904,
+            "medium": 10414961,
+            "large": 14946615,
+            "xlarge": 29070901
+         }
+      },
+      {
+         "id": "reflection",
+         "title": "reflection",
+         "range": "0-80",
+         "sizes": {
+            "xsmall": 2956272,
+            "small": 5129800,
+            "medium": 7894552,
+            "large": 11434283,
+            "xlarge": 22375614
+         }
+      },
+      {
+         "id": "seal",
+         "title": "seal",
+         "range": "0-79",
+         "sizes": {
+            "xsmall": 2769712,
+            "small": 4729836,
+            "medium": 7252728,
+            "large": 10516285,
+            "xlarge": 20812440
+         }
+      }
+   ]
+}
