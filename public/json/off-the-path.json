@@ -1,0 +1,31 @@
+{
+   "title": "Off The Path",
+   "id": "off-the-path",
+   "index": 0,
+   "content": [
+      {
+         "id": "buttercups",
+         "title": "buttercups",
+         "range": "0-79",
+         "sizes": {
+            "xsmall": 3498774,
+            "small": 5735454,
+            "medium": 8227919,
+            "large": 11223758,
+            "xlarge": 121377222
+         }
+      },
+      {
+         "id": "rope-tail",
+         "title": "rope tail",
+         "range": "0-79",
+         "sizes": {
+            "xsmall": 4257146,
+            "small": 7813038,
+            "medium": 11630643,
+            "large": 15967760,
+            "xlarge": 135110197
+         }
+      }
+   ]
+}
