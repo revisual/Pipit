@@ -4,7 +4,8 @@ var home = require( './home' )();
 
 /* GET home page. */
 router.get( '/', home.index );
-router.get( '/api-book/:project/:book/:size', api.book );
-router.get( '/api-project/', api.projects );
+router.get( '/api/book/', api.book );
+router.get( '/api/listProject/', api.listProjects );
+router.get( '/api/project/', api.project );
 
 module.exports = router;

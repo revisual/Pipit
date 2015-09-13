@@ -9,6 +9,17 @@ angular.module( 'app.directives', [] )
          link: function ( scope, element, attrib ) {
             var _hasTouch = (attrib.touchEnabled == 'true');
             var _enabled = false;
+            var _moveValidated = false;
+            var _normalisedData = {
+               firstTouchX: 0,
+               firstTouchY: 0,
+               lastTouchX: 0,
+               lastTouchY: 0,
+               distFromFirstX: 0,
+               distFromFirstY: 0,
+               distFromLastX: 0,
+               distFromLastY: 0
+            };
 
             scope.active = false;
             scope.trackPad = {
@@ -17,16 +28,28 @@ angular.module( 'app.directives', [] )
 
                normalise: function ( w, h ) {
                   var trackPad = scope.trackPad;
-                  return {
-                     firstTouchX: trackPad.previousPoint.x / w,
-                     firstTouchY: trackPad.previousPoint.y / h,
-                     lastTouchX: trackPad.previousPoint.mx / w,
-                     lastTouchY: trackPad.previousPoint.my / h,
-                     distFromFirstX: trackPad.distancePoint.x / w,
-                     distFromFirstY: trackPad.distancePoint.y / h,
-                     distFromLastX: trackPad.distancePoint.mx / w,
-                     distFromLastY: trackPad.distancePoint.my / h
+
+                  if(_moveValidated ) {
+                     _normalisedData = {
+                        firstTouchX: trackPad.previousPoint.x / w,
+                        firstTouchY: trackPad.previousPoint.y / h,
+                        lastTouchX: trackPad.previousPoint.mx / w,
+                        lastTouchY: trackPad.previousPoint.my / h,
+                        distFromFirstX: trackPad.distancePoint.x / w,
+                        distFromFirstY: trackPad.distancePoint.y / h,
+                        distFromLastX: trackPad.distancePoint.mx / w,
+                        distFromLastY: trackPad.distancePoint.my / h
+                     };
+                     _moveValidated = false;
                   }
+                  else{
+                     _normalisedData.distFromLastX = 0
+
+                  }
+
+
+
+                  return _normalisedData;
                }
             };
 
@@ -82,7 +105,7 @@ angular.module( 'app.directives', [] )
             }
 
             function mouseEnd() {
-               console.log("off")
+               console.log( "off" )
                element.off( 'mousemove', mouseMove );
                element.off( 'mouseout', mouseEnd );
                element.off( 'mouseup', mouseEnd );
@@ -101,6 +124,7 @@ angular.module( 'app.directives', [] )
 
             function end( pos ) {
 
+               console.log("end") ;
                scope.$apply( function () {
                   scope.active = false;
                } );
@@ -108,7 +132,11 @@ angular.module( 'app.directives', [] )
             }
 
             function move( pos ) {
+
                var trackPad = scope.trackPad;
+               console.log("x" +( pos.x)) ;
+               console.log("mx" +( trackPad.previousPoint.mx)) ;
+               console.log("//////////////////////") ;
                trackPad.distancePoint.mx = pos.x - trackPad.previousPoint.mx;
                trackPad.distancePoint.my = pos.y - trackPad.previousPoint.my;
                trackPad.previousPoint.mx = pos.x;
@@ -116,6 +144,7 @@ angular.module( 'app.directives', [] )
                trackPad.distancePoint.x = pos.x - trackPad.previousPoint.x;
                trackPad.distancePoint.y = pos.y - trackPad.previousPoint.y;
                //console.log( trackPad.distancePoint.x );
+               _moveValidated = true;
 
             }
 
@@ -137,10 +166,17 @@ angular.module( 'app.directives', [] )
                scope.imageOverlay = {};
             }
 
+
+            scope.imageOverlay ['disable' + capitalizeFirstLetter( attribs.id ) + 'Image'] = function () {
+               if (element.hasClass( 'hidden' )) return;
+               element.addClass( 'hidden' );
+            };
+
             scope.imageOverlay['set' + capitalizeFirstLetter( attribs.id ) + 'Image'] = function ( url, a, sizeType ) {
 
                var apply = false;
                var o = {};
+               var isHidden = element.hasClass( 'hidden' );
 
                if (url != null && url != "") {
                   o['background-image'] = 'url(' + url + ')';
@@ -159,6 +195,10 @@ angular.module( 'app.directives', [] )
 
                if (apply) {
                   element.css( o );
+               }
+
+               if (isHidden && sizeType == undefined) {
+                  element.removeClass( 'hidden' );
                }
 
 

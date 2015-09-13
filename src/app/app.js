@@ -20,6 +20,11 @@ module.config( ['$routeProvider', '$locationProvider',
             templateUrl: "partials/main-menu.html",
             controller: "MenuCtrl"
          } )
+         .when( "/project",
+         {
+            templateUrl: "partials/project.html",
+            controller: "ProjectCtrl"
+         } )
          .when( "/book",
          {
             templateUrl: "partials/book.html",

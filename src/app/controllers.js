@@ -7,9 +7,24 @@ module.controller( 'MenuCtrl', ['$scope', '$location', 'API',
       var search = $location.search();
       $scope.partial = (search.partial === undefined) ? "partials/default.html" : "partials/" + search.partial + ".html";
 
-      API.getProject( search )
+      API.getProjectList( search )
          .then( function ( data ) {
+
             $scope.projects = data.projects;
+
+         } );
+
+
+   }] );
+
+module.controller( 'ProjectCtrl', ['$scope', '$location', 'API',
+   function ( $scope, $location, API ) {
+
+      var search = $location.search();
+      API.getProject( search.id )
+         .then( function ( data ) {
+            $scope.books = data.project.content;
+            $scope.project = data.project;
 
          } );
 
@@ -74,11 +89,17 @@ module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
          Settings.sensitivity = $scope.sensitivity;
       } );
 
+      $scope.$watch( 'interpolation', function () {
+         Settings.interpolation = $scope.interpolation;
+      } );
+
       $scope.imageSize = Settings.imageSize;
       $scope.imageSizeSliderValues = Settings.imageSizeSliderValues;
 
       $scope.sensitivity = Settings.sensitivity;
       $scope.sensitivitySliderValues = Settings.sensitivitySliderValues;
+
+      $scope.interpolation = Settings.interpolation;
 
 
    }] );
@@ -128,22 +149,33 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
          $scope.imageOverlay.setBottomImage( img.src );
          $scope.showBook = true;
          $scope.showProgress = true;
+         $scope.showDragInfo = false;
       } );
 
       BookService.complete.addOnce( function () {
          $scope.$apply( function () {
             $scope.showProgress = false;
             $scope.enabled = true;
+            $scope.showDragInfo = true;
          } );
 
       } );
 
       BookService.tick.add( function ( adjust ) {
-         var adjustedWidth = (windowService.width / Settings.sensitivity) * BookService.data.totalPages;
+         //var adjustedWidth = (windowService.width / Settings.sensitivity) * BookService.data.totalPages;
+         var adjustedWidth =   BookService.data.totalPages   ;
+         //console.log("mx = " + $scope.trackPad.distancePoint.mx) ;
          var pageData = adjust( $scope.trackPad.normalise( adjustedWidth, 1 ).distFromLastX );
          var overlay = $scope.imageOverlay;
          overlay.setBottomImage( pageData.baseURL );
-         overlay.setTopImage( pageData.overlayURL, pageData.overlayOpacity );
+
+         if (Settings.interpolation) {
+            overlay.setTopImage( pageData.overlayURL, pageData.overlayOpacity );
+         }
+         else  {
+            overlay.disableTopImage();
+         }
+
       } );
 
       BookService.load();
@@ -151,6 +183,9 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
       $scope.$watch( 'active', function () {
 
          if ($scope.active) {
+            if ($scope.showDragInfo) {
+               $scope.showDragInfo = false;
+            }
             BookService.start();
          }
 
@@ -165,6 +200,13 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
          overlay.setTopImage( null, -1, imageSize );
 
       } );
+
+   }] );
+
+module.controller( 'CollapseCtrl', ['$scope',
+   function ( $scope ) {
+
+      $scope.isCollapsed = true;
 
    }] );
 

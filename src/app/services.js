@@ -33,17 +33,15 @@ angular.module( 'app.services', [] )
             var currentSize = Settings.currentSize;
             var value = sizes[currentSize];
 
-            if( value == 'auto'){
+            if (value == 'auto') {
                var windowSize = windowService.width;
-               if( windowSize <= sizes.xsmall)return  sizes.xsmall;
-               if( windowSize <= sizes.small)return  sizes.small;
-               if( windowSize <= sizes.medium)return  sizes.medium;
-               if( windowSize <= sizes.large)return  sizes.large;
-               if( windowSize <= sizes.xlarge)return  sizes.xlarge;
+               if (windowSize <= sizes.xsmall)return sizes.xsmall;
+               if (windowSize <= sizes.small)return sizes.small;
+               if (windowSize <= sizes.medium)return sizes.medium;
+               if (windowSize <= sizes.large)return sizes.large;
+               if (windowSize <= sizes.xlarge)return sizes.xlarge;
             }
-            return  value;
-
-
+            return value;
 
 
          }
@@ -53,29 +51,26 @@ angular.module( 'app.services', [] )
    .factory( 'API', ['$http', 'imageSize', function ( $http, imageSize ) {
 
       return {
-         getBook: function ( project, book ) {
-            return $http.get( '/api-book/' + project + '/' + book + '/' + imageSize.getValue() + '/' )
+         getBook: function ( bookID ) {
+            return $http.get( '/api/book?id=' + bookID + '&size=' + imageSize.getValue() )
                .then( function ( result ) {
                   return result.data;
                } );
-
-
          },
-         getProject: function ( search ) {
+         getProject: function ( projectID ) {
+            return $http.get( '/api/project?id=' + projectID  )
+               .then( function ( result ) {
+                  return result.data;
+               } );
+         },
 
-            var query = "";
-            for (var key in search) {
-               if (query != "") {
-                  query += "&"
-               }
-               query += key + "=" + search[key];
-            }
 
-            if (query != "") {
-               query = "?" + query;
-            }
 
-            return $http.get( '/api-project/' + query )
+         getProjectList: function ( search ) {
+
+            var projects = search.projects;
+            projects = ( projects != undefined ) ? '?projects=' + projects : "/";
+            return $http.get( '/api/listProject' + projects )
                .then( function ( result ) {
                   return result.data;
                } );
@@ -86,9 +81,9 @@ angular.module( 'app.services', [] )
    }] )
 
    //todo - pull out the tick stuff into its own service
-   .factory( 'bookData', [ 'Settings', function (  Settings ) {
+   .factory( 'bookData', ['Settings', function ( Settings ) {
 
-      return  {
+      return {
          isComplete: function () {
             var cV = Math.round( this.currentValue * 1000 );
             var tV = Math.round( this.targetValue * 1000 );
@@ -107,17 +102,18 @@ angular.module( 'app.services', [] )
          backToBase: function () {
             this.targetValue = this.currentValue;
          },
-         applyValue:function (value) {
-            var newValue = this.targetValue + value;
-            if (newValue > 0 && newValue < 1) {
-               this.targetValue += value;
-            }
+         applyValue: function ( value ) {
+            var test = value //* Settings.sensitivity;
+            var newValue = this.targetValue + test;
+            if( newValue <0) this.targetValue = 0;
+            else if (newValue >1)  this.targetValue = 1;
+            else this.targetValue += test;
             this.currentValue += (this.targetValue - this.currentValue) * Settings.drag;
-            var v = this.currentValue * this.totalPages;
+            var v = this.currentValue * (this.totalPages-1);
             this.currentPage = Math.floor( v );
             this.currentAlpha = v - this.currentPage;
          },
-         applyUrls:function(imageService){
+         applyUrls: function ( imageService ) {
 
             var overlayIndex = this.currentPage + 1;
             var nextBase = imageService.images[this.currentPage].src;
@@ -131,10 +127,10 @@ angular.module( 'app.services', [] )
             this.baseURL = (this.baseURL == nextBase) ? null : nextBase;
             this.overlayURL = (this.overlayURL == nextOverlay) ? null : nextOverlay;
             this.overlayOpacity = this.currentAlpha;
-         }  ,
+         },
          totalPages: 0,
          currentPage: 0,
-         currentAlpha:0,
+         currentAlpha: 0,
          currentValue: 0,
          targetValue: 0,
          baseURL: null,
@@ -145,11 +141,11 @@ angular.module( 'app.services', [] )
 
    }] )
 
-   .factory( 'BookService', ['$location', 'animationFrame', 'bookData','API', 'imageService', 'Settings', function ( $location, animationFrame, bookData,API, imageService ) {
+   .factory( 'BookService', ['$location', 'animationFrame', 'bookData', 'API', 'imageService', 'Settings', function ( $location, animationFrame, bookData, API, imageService ) {
 
       var NULL_RETURN = {baseURL: null, overlayURL: null, overlayOpacity: -1};
       var _tick = new signals.Signal();
-            var _active;
+      var _active;
       var _permissionToEnd = false;
       var _stopTimeOut;
 
@@ -158,6 +154,7 @@ angular.module( 'app.services', [] )
          _stopTimeOut = setTimeout( function () {
             if (!_active)return;
             animationFrame( _update );
+            //console.log("tick");
             _tick.dispatch( adjustMultiplier );
          }, 33 );
 
@@ -188,8 +185,8 @@ angular.module( 'app.services', [] )
       var adjustMultiplier = function ( value ) {
          if (isNaN( value ))return NULL_RETURN;
 
-         bookData.applyValue(value);
-         bookData.applyUrls(imageService);
+         bookData.applyValue( value );
+         bookData.applyUrls( imageService );
 
          if (_permissionToEnd && bookData.isComplete()) {
             kill();
@@ -201,7 +198,7 @@ angular.module( 'app.services', [] )
       var load = function () {
 
          var search = $location.search();
-         API.getBook( search.projects, search.book )
+         API.getBook( search.id )
             .then( function ( data ) {
                imageService.resetWith( data.book.imageURLs );
                imageService.start();
@@ -219,7 +216,7 @@ angular.module( 'app.services', [] )
          resolve: imageService.on.resolve,
          progress: imageService.on.progress,
          complete: imageService.on.complete,
-         data:bookData,
+         data: bookData,
          start: start,
          tick: _tick,
          end: end,
@@ -235,12 +232,13 @@ angular.module( 'app.services', [] )
          currentSize: 'auto',
          sizes: {xsmall: 480, small: 768, medium: 992, large: 1200, xlarge: 1620, auto: 'auto'},
          fullscreen: false,
-         sensitivity: 33,
-         sensitivitySliderValues: {min: 1, max: 200, step: 1},
+         sensitivity: 1,
+         sensitivitySliderValues: {min: 0.5, max: 2, step: 0.1},
          drag: 0.25,
          dragSliderValues: {min: 0.1, max: 1.0, step: 0.1},
          imageSize: 110,
          imageSizeSliderValues: {min: 50, max: 110, step: 1},
+         interpolation:true,
          getImageSizeAsCSS: function () {
 
             if (this.imageSize < 100)
