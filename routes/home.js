@@ -2,7 +2,6 @@
  * Created by Pip on 03/10/2014.
  */
 module.exports = function () {
-   // var preprocessor = require( "./../scripts/pipit-preprocessor" )( process.env.JSON_END_POINT, process.env.PARTIAL_END_POINT );
    var file = require( "./../scripts/file-access" )();
    return {
       index: function ( req, res ) {
