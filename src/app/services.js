@@ -234,7 +234,7 @@ angular.module( 'app.services', [] )
          fullscreen: false,
          sensitivity: 1,
          sensitivitySliderValues: {min: 0.5, max: 2, step: 0.1},
-         drag: 0.25,
+         drag: 0.33,
          dragSliderValues: {min: 0.1, max: 1.0, step: 0.1},
          imageSize: 110,
          imageSizeSliderValues: {min: 50, max: 110, step: 1},

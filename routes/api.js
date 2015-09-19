@@ -1,6 +1,5 @@
 module.exports = function () {
-   /* var bookPreprocessor = require( "./../scripts/pipit-book-preprocessor" )( process.env.JSON_END_POINT, process.env.IMAGE_END_POINT );
-    var projectPreprocessor = require( "./../scripts/pipit-project-preprocessor" )( process.env.JSON_END_POINT, process.env.IMAGE_END_POINT );*/
+
    var db = new (require( '../scripts/db' ).DB )()
       , endPoint = process.env.IMAGE_END_POINT;
 
