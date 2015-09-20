@@ -108,11 +108,17 @@ module.controller( 'ScrollCtrl', ['$scope', 'BookService',
    function ( $scope, BookService ) {
       var pageData = BookService.data;
 
-      $scope.scrollProperties = {ratio: 1 / pageData.totalPages, position: pageData.currentValue};
+      $scope.scrollProperties = {
+         ratio: 1 / pageData.totalPages,
+         position: pageData.currentValue / (pageData.totalPages - 1)
+      };
 
       BookService.tick.add( function ( adjust ) {
          $scope.$apply( function () {
-            $scope.scrollProperties = {ratio: 1 / pageData.totalPages, position: pageData.currentValue};
+            $scope.scrollProperties = {
+               ratio: 1 / pageData.totalPages,
+               position: pageData.currentValue / ( pageData.totalPages - 1)
+            };
          } );
       } );
 
@@ -162,17 +168,18 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
       } );
 
       BookService.tick.add( function ( adjust ) {
-         //var adjustedWidth = (windowService.width / Settings.sensitivity) * BookService.data.totalPages;
-         var adjustedWidth =   BookService.data.totalPages   ;
-         //console.log("mx = " + $scope.trackPad.distancePoint.mx) ;
-         var pageData = adjust( $scope.trackPad.normalise( adjustedWidth, 1 ).distFromLastX );
+
+         var adjustedWidth = windowService.width * Settings.sensitivity;
+
+         var move = ( $scope.trackPad.distancePoint.mx / adjustedWidth);
+         var pageData = adjust( move );
          var overlay = $scope.imageOverlay;
          overlay.setBottomImage( pageData.baseURL );
 
          if (Settings.interpolation) {
             overlay.setTopImage( pageData.overlayURL, pageData.overlayOpacity );
          }
-         else  {
+         else {
             overlay.disableTopImage();
          }
 

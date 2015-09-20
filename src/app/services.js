@@ -103,13 +103,13 @@ angular.module( 'app.services', [] )
             this.targetValue = this.currentValue;
          },
          applyValue: function ( value ) {
-            var test = value //* Settings.sensitivity;
+            var test = value ;
             var newValue = this.targetValue + test;
             if( newValue <0) this.targetValue = 0;
-            else if (newValue >1)  this.targetValue = 1;
+            else if (newValue >this.totalPages-1)  this.targetValue = this.totalPages-1;
             else this.targetValue += test;
             this.currentValue += (this.targetValue - this.currentValue) * Settings.drag;
-            var v = this.currentValue * (this.totalPages-1);
+            var v = this.currentValue  ;
             this.currentPage = Math.floor( v );
             this.currentAlpha = v - this.currentPage;
          },
@@ -154,7 +154,6 @@ angular.module( 'app.services', [] )
          _stopTimeOut = setTimeout( function () {
             if (!_active)return;
             animationFrame( _update );
-            //console.log("tick");
             _tick.dispatch( adjustMultiplier );
          }, 33 );
 
@@ -232,9 +231,9 @@ angular.module( 'app.services', [] )
          currentSize: 'auto',
          sizes: {xsmall: 480, small: 768, medium: 992, large: 1200, xlarge: 1620, auto: 'auto'},
          fullscreen: false,
-         sensitivity: 1,
-         sensitivitySliderValues: {min: 0.5, max: 2, step: 0.1},
-         drag: 0.33,
+         sensitivity: 0.01,
+         sensitivitySliderValues: {min: 0.001, max: 1, step: 0.001},
+         drag: 0.025,
          dragSliderValues: {min: 0.1, max: 1.0, step: 0.1},
          imageSize: 110,
          imageSizeSliderValues: {min: 50, max: 110, step: 1},
