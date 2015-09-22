@@ -27,8 +27,10 @@
                       aria-hidden="true"></span>
 
     </label>
-    <!--<label class="btn btn-lg"><a href="" ng-click="backToMenu()"> <span class="fa fa-times"
-                                                  aria-hidden="true"></span></a></label>-->
+    <label class="btn btn-lg">
+        <span class="fa fa-lg fa-times hilight"  aria-hidden="true"
+              href="" ng-click="backToMenu()">
+                                                                         </span></label>
 </div>
 
 
@@ -45,7 +47,7 @@
                 <slider-control
                         touch-enabled="{{hasTouch}}"
                         enabled="{{enabled}}"
-                        ng-model="imageSize"
+                        ng-model="imageScale"
                         min="{{imageSizeSliderValues.min}}"
                         max="{{imageSizeSliderValues.max}}"
                         increment="{{imageSizeSliderValues.step}}">

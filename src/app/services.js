@@ -11,7 +11,11 @@ angular.module( 'app.services', [] )
          height: $window.innerHeight,
          hasTouch: function () {
             return ( 'ontouchstart' in $window);
+         }   ,
+         back:function(){
+            $window.history.back();
          }
+
       };
 
       $window.onresize = function ( event ) {
@@ -58,12 +62,11 @@ angular.module( 'app.services', [] )
                } );
          },
          getProject: function ( projectID ) {
-            return $http.get( '/api/project?id=' + projectID  )
+            return $http.get( '/api/project?id=' + projectID )
                .then( function ( result ) {
                   return result.data;
                } );
          },
-
 
 
          getProjectList: function ( search ) {
@@ -103,13 +106,13 @@ angular.module( 'app.services', [] )
             this.targetValue = this.currentValue;
          },
          applyValue: function ( value ) {
-            var test = value ;
+            var test = value;
             var newValue = this.targetValue + test;
-            if( newValue <0) this.targetValue = 0;
-            else if (newValue >this.totalPages-1)  this.targetValue = this.totalPages-1;
+            if (newValue < 0) this.targetValue = 0;
+            else if (newValue > this.totalPages - 1)  this.targetValue = this.totalPages - 1;
             else this.targetValue += test;
             this.currentValue += (this.targetValue - this.currentValue) * Settings.drag;
-            var v = this.currentValue  ;
+            var v = this.currentValue;
             this.currentPage = Math.floor( v );
             this.currentAlpha = v - this.currentPage;
          },
@@ -231,18 +234,41 @@ angular.module( 'app.services', [] )
          currentSize: 'auto',
          sizes: {xsmall: 480, small: 768, medium: 992, large: 1200, xlarge: 1620, auto: 'auto'},
          fullscreen: false,
-         sensitivity: 0.01,
-         sensitivitySliderValues: {min: 0.001, max: 1, step: 0.001},
+         sensitivity: 100,
+         sensitivitySliderValues: {min: 1, max: 100, step: 1},
          drag: 0.025,
          dragSliderValues: {min: 0.1, max: 1.0, step: 0.1},
-         imageSize: 110,
+         imageScale: 110,
          imageSizeSliderValues: {min: 50, max: 110, step: 1},
-         interpolation:true,
+         interpolation: true,
+         setFromPreset: function ( data ) {
+
+            if (data.currentSize != undefined) {
+               this.currentSize = data.currentSize;
+            }
+
+            if (data.sensitivity != undefined) {
+               this.sensitivity = data.sensitivity;
+            }
+
+            if (data.drag != undefined) {
+               this.drag = data.drag;
+            }
+
+            if (data.imageScale != undefined) {
+               this.imageScale = data.imageScale;
+            }
+
+            if (data.interpolation != undefined) {
+               this.interpolation = data.interpolation;
+            }
+
+         },
          getImageSizeAsCSS: function () {
 
-            if (this.imageSize < 100)
-               return this.imageSize + "%";
-            if (this.imageSize < 110)
+            if (this.imageScale < 100)
+               return this.imageScale + "%";
+            if (this.imageScale < 110)
                return "contains";
             else
                return "cover";
@@ -250,6 +276,19 @@ angular.module( 'app.services', [] )
 
 
       }
+
+   } )
+
+   .factory( 'Presets', function () {
+
+      return {
+         current: 0,
+         presets: [
+            {title: "worst", currentSize: "xsmall", sensitivity: 100, drag: 0.033, imageScale: 50, interpolation: false},
+            {title: "best", currentSize: "auto", sensitivity: 100, drag: 0.033, imageScale: 110, interpolation: true}
+         ]
+      }
+
 
    } )
    .value( 'imageService', new ImageListLoader() );
