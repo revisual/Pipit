@@ -14,7 +14,6 @@ module.controller( 'MenuCtrl', ['$scope', '$location', 'API',
 
          } );
 
-
    }] );
 
 module.controller( 'ProjectCtrl', ['$scope', '$location', 'API',
@@ -32,8 +31,8 @@ module.controller( 'ProjectCtrl', ['$scope', '$location', 'API',
    }] );
 
 
-module.controller( 'FullScreenCtrl', ['$scope', '$location', '$route', 'Fullscreen', 'Settings',
-   function ( $scope, $location, $route, Fullscreen, Settings ) {
+module.controller( 'FullScreenCtrl', ['$scope',  'windowService', 'Fullscreen', 'Settings',
+   function ( $scope, windowService, Fullscreen, Settings ) {
 
       $scope.toggle = function () {
          if (Fullscreen.isEnabled()) {
@@ -50,6 +49,7 @@ module.controller( 'FullScreenCtrl', ['$scope', '$location', '$route', 'Fullscre
       };
 
       $scope.fullscreen = Settings.fullscreen;
+
       $scope.toggle = function () {
          if (Fullscreen.isEnabled()) {
             Fullscreen.cancel();
@@ -65,8 +65,7 @@ module.controller( 'FullScreenCtrl', ['$scope', '$location', '$route', 'Fullscre
       };
 
       $scope.backToMenu = function () {
-         $location.path( '/' );
-         $route.reload();
+         windowService.back();
       };
 
       $scope.fullscreen = Settings.fullscreen;
@@ -80,9 +79,9 @@ module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
       $scope.hasTouch = windowService.hasTouch();
       $scope.enabled = true;
 
-      $scope.$watch( 'imageSize', function () {
-         Settings.imageSize = $scope.imageSize;
-         $scope.$emit( 'imageSize', Settings.getImageSizeAsCSS() );
+      $scope.$watch( 'imageScale', function () {
+         Settings.imageScale = $scope.imageScale;
+         $scope.$emit( 'imageScale', Settings.getImageSizeAsCSS() );
       } );
 
       $scope.$watch( 'sensitivity', function () {
@@ -93,7 +92,7 @@ module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
          Settings.interpolation = $scope.interpolation;
       } );
 
-      $scope.imageSize = Settings.imageSize;
+      $scope.imageScale = Settings.imageScale;
       $scope.imageSizeSliderValues = Settings.imageSizeSliderValues;
 
       $scope.sensitivity = Settings.sensitivity;
@@ -138,8 +137,8 @@ module.controller( 'ImageSizeCtrl', ['$scope', 'Settings',
 
    }] );
 
-module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowService',
-   function ( $scope, BookService, Settings, windowService ) {
+module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowService', '$location',
+   function ( $scope, BookService, Settings, windowService, $location ) {
 
       BookService.reset();
 
@@ -169,7 +168,7 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
 
       BookService.tick.add( function ( adjust ) {
 
-         var adjustedWidth = windowService.width * Settings.sensitivity;
+         var adjustedWidth = windowService.width / Settings.sensitivity;
 
          var move = ( $scope.trackPad.distancePoint.mx / adjustedWidth);
          var pageData = adjust( move );
@@ -184,6 +183,9 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
          }
 
       } );
+
+
+      Settings.setFromPreset( $location.search() );
 
       BookService.load();
 
@@ -201,10 +203,10 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
          }
       } );
 
-      $scope.$on( 'imageSize', function ( event, imageSize ) {
+      $scope.$on( 'imageScale', function ( event, imageScale ) {
          var overlay = $scope.imageOverlay;
-         overlay.setBottomImage( null, -1, imageSize );
-         overlay.setTopImage( null, -1, imageSize );
+         overlay.setBottomImage( null, -1, imageScale );
+         overlay.setTopImage( null, -1, imageScale );
 
       } );
 
