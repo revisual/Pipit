@@ -77,7 +77,34 @@ module.exports = function () {
             } )
 
             .catch( function ( error ) {
-               console.log( "" )
+               res.json(
+                  {
+                     success: false,
+                     error: error
+                  } );
+            } );
+
+
+      },
+
+      presets: function ( req, res ) {
+
+         db.getPresets(  )
+
+            .then( function ( data ) {
+               res.json(
+                  {
+                     success: true,
+                     items: data
+                  } );
+            } )
+
+            .catch( function ( error ) {
+               res.json(
+                  {
+                     success: false,
+                     error: error
+                  } );
             } );
 
 

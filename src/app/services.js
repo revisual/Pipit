@@ -11,8 +11,8 @@ angular.module( 'app.services', [] )
          height: $window.innerHeight,
          hasTouch: function () {
             return ( 'ontouchstart' in $window);
-         }   ,
-         back:function(){
+         },
+         back: function () {
             $window.history.back();
          }
 
@@ -27,36 +27,36 @@ angular.module( 'app.services', [] )
 
    }] )
 
-   .factory( 'imageSize', ['Settings', 'windowService', function ( Settings, windowService ) {
+   /*  .factory( 'imageSize', ['Settings', 'windowService', function ( Settings, windowService ) {
 
+
+    return {
+    getValue: function () {
+
+    var sizes = Settings.sizes;
+    var currentSize = Settings.currentSize;
+    var value = sizes[currentSize];
+
+    if (value == 'auto') {
+    var windowSize = windowService.width;
+    if (windowSize <= sizes.xsmall)return sizes.xsmall;
+    if (windowSize <= sizes.small)return sizes.small;
+    if (windowSize <= sizes.medium)return sizes.medium;
+    if (windowSize <= sizes.large)return sizes.large;
+    if (windowSize <= sizes.xlarge)return sizes.xlarge;
+    }
+    return value;
+
+
+    }
+    }
+    }] )*/
+
+   .factory( 'API', ['$http', function ( $http ) {
 
       return {
-         getValue: function () {
-
-            var sizes = Settings.sizes;
-            var currentSize = Settings.currentSize;
-            var value = sizes[currentSize];
-
-            if (value == 'auto') {
-               var windowSize = windowService.width;
-               if (windowSize <= sizes.xsmall)return sizes.xsmall;
-               if (windowSize <= sizes.small)return sizes.small;
-               if (windowSize <= sizes.medium)return sizes.medium;
-               if (windowSize <= sizes.large)return sizes.large;
-               if (windowSize <= sizes.xlarge)return sizes.xlarge;
-            }
-            return value;
-
-
-         }
-      }
-   }] )
-
-   .factory( 'API', ['$http', 'imageSize', function ( $http, imageSize ) {
-
-      return {
-         getBook: function ( bookID ) {
-            return $http.get( '/api/book?id=' + bookID + '&size=' + imageSize.getValue() )
+         getBook: function ( bookID, imageSize ) {
+            return $http.get( '/api/book?id=' + bookID + '&size=' + imageSize )
                .then( function ( result ) {
                   return result.data;
                } );
@@ -67,7 +67,12 @@ angular.module( 'app.services', [] )
                   return result.data;
                } );
          },
-
+         getPresets: function () {
+            return $http.get( '/api/presets' )
+               .then( function ( result ) {
+                  return result.data;
+               } );
+         },
 
          getProjectList: function ( search ) {
 
@@ -88,8 +93,9 @@ angular.module( 'app.services', [] )
 
       return {
          isComplete: function () {
-            var cV = Math.round( this.currentValue * 1000 );
-            var tV = Math.round( this.targetValue * 1000 );
+            var threshold = Settings.killThreshold;
+            var cV = Math.round( this.currentValue * threshold );
+            var tV = Math.round( this.targetValue * threshold );
             return cV === tV;
          },
          reset: function () {
@@ -144,7 +150,7 @@ angular.module( 'app.services', [] )
 
    }] )
 
-   .factory( 'BookService', ['$location', 'animationFrame', 'bookData', 'API', 'imageService', 'Settings', function ( $location, animationFrame, bookData, API, imageService ) {
+   .factory( 'BookService', ['$location', 'animationFrame', 'bookData', 'API', 'imageService', 'Settings', function ( $location, animationFrame, bookData, API, imageService, Settings ) {
 
       var NULL_RETURN = {baseURL: null, overlayURL: null, overlayOpacity: -1};
       var _tick = new signals.Signal();
@@ -158,7 +164,7 @@ angular.module( 'app.services', [] )
             if (!_active)return;
             animationFrame( _update );
             _tick.dispatch( adjustMultiplier );
-         }, 33 );
+         }, Settings.fps );
 
       };
 
@@ -191,6 +197,7 @@ angular.module( 'app.services', [] )
          bookData.applyUrls( imageService );
 
          if (_permissionToEnd && bookData.isComplete()) {
+            console.log( "KILL" );
             kill();
          }
 
@@ -200,7 +207,7 @@ angular.module( 'app.services', [] )
       var load = function () {
 
          var search = $location.search();
-         API.getBook( search.id )
+         API.getBook( search.id, Settings.getImageSizeValue() )
             .then( function ( data ) {
                imageService.resetWith( data.book.imageURLs );
                imageService.start();
@@ -228,70 +235,104 @@ angular.module( 'app.services', [] )
 
    }] )
 
-   .factory( 'Settings', function () {
+   .factory( 'Settings', ['$cookies', 'windowService', 'API', function ( $cookies, windowService, API ) {
 
-      return {
-         currentSize: 'auto',
-         sizes: {xsmall: 480, small: 768, medium: 992, large: 1200, xlarge: 1620, auto: 'auto'},
-         fullscreen: false,
-         sensitivity: 100,
-         sensitivitySliderValues: {min: 1, max: 100, step: 1},
-         drag: 0.025,
-         dragSliderValues: {min: 0.1, max: 1.0, step: 0.1},
-         imageScale: 110,
-         imageSizeSliderValues: {min: 50, max: 110, step: 1},
-         interpolation: true,
-         setFromPreset: function ( data ) {
+      var that = {
+            fps: 40,
+            imageSize: 'xsmall',
+            sizes: {xsmall: 480, small: 768, medium: 992, large: 1200, xlarge: 1620, auto: 'auto'},
+            fullscreen: false,
+            sensitivity: 100,
+            drag: 0.025,
+            imageScale: 110,
+            interpolation: true,
+            killThreshold: 10,
+            current: 1,
+            items: [],
 
-            if (data.currentSize != undefined) {
-               this.currentSize = data.currentSize;
+            changed: new signals.Signal(),
+
+            getImageSizeValue: function () {
+
+               var sizes = this.sizes;
+               var imageSize = this.imageSize;
+               var value = sizes[imageSize];
+
+               if (value == 'auto') {
+                  var windowSize = windowService.width;
+                  if (windowSize <= sizes.xsmall)return sizes.xsmall;
+                  if (windowSize <= sizes.small)return sizes.small;
+                  if (windowSize <= sizes.medium)return sizes.medium;
+                  if (windowSize <= sizes.large)return sizes.large;
+                  if (windowSize <= sizes.xlarge)return sizes.xlarge;
+               }
+               return value;
+            },
+            setFromCookie: function () {
+               if ($cookies.preset == undefined)return;
+               var index = parseInt( $cookies.preset );
+               this.current = index;
+               this.setFromPreset( this.items[index] );
+            },
+            setFromPreset: function ( data ) {
+
+               if (data == null)return;
+
+               for (var name in that) {
+                  var nameLC = name.toLowerCase();
+                  if (data.hasOwnProperty( name ) && data[name] != null) {
+                     that[name] = data[name];
+                  }
+                  else if (data.hasOwnProperty( nameLC ) && data[nameLC] != null) {
+                     that[name] = data[nameLC];
+                  }
+               }
+               that.changed.dispatch();
+            },
+            getImageSizeAsCSS: function () {
+
+               if (this.imageScale < 100)
+                  return this.imageScale + "%";
+               if (this.imageScale < 110)
+                  return "contains";
+               else
+                  return "cover";
             }
+            ,
 
-            if (data.sensitivity != undefined) {
-               this.sensitivity = data.sensitivity;
+            persist: function () {
+               if (this.current == -1)return;
+               $cookies.preset = this.current
             }
+            ,
 
-            if (data.drag != undefined) {
-               this.drag = data.drag;
+            load: function () {
+
+               return API.getPresets()
+                  .then( function ( data ) {
+                     if (data.success) {
+                        that.items = data.items;
+                        that.changed.dispatch();
+                     }
+                     return data;
+                  } );
             }
+            ,
 
-            if (data.imageScale != undefined) {
-               this.imageScale = data.imageScale;
+            setCurrent: function ( value ) {
+               var index = this.items.indexOf( value );
+               if (value == -1)return;
+               this.current = index;
             }
-
-            if (data.interpolation != undefined) {
-               this.interpolation = data.interpolation;
-            }
-
-         },
-         getImageSizeAsCSS: function () {
-
-            if (this.imageScale < 100)
-               return this.imageScale + "%";
-            if (this.imageScale < 110)
-               return "contains";
-            else
-               return "cover";
          }
+         ;
 
+      return that;
 
-      }
+   }] )
 
-   } )
-
-   .factory( 'Presets', function () {
-
-      return {
-         current: 0,
-         presets: [
-            {title: "worst", currentSize: "xsmall", sensitivity: 100, drag: 0.033, imageScale: 50, interpolation: false},
-            {title: "best", currentSize: "auto", sensitivity: 100, drag: 0.033, imageScale: 110, interpolation: true}
-         ]
-      }
-
-
-   } )
-   .value( 'imageService', new ImageListLoader() );
+   .
+   value( 'imageService', new ImageListLoader() );
 
 
 
