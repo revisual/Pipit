@@ -1,0 +1,90 @@
+<div ng-style="{'opacity': progress}">
+    <image-overlay id="bottom" class="flickBook"></image-overlay>
+    <image-overlay id="top" class="flickBook"></image-overlay>
+</div>
+<track-pad touch-enabled="{{hasTouch}}"
+           enabled="{{enabled}}">
+</track-pad>
+<div class="container-center avoid-clicks">
+    <div class="element-center hilight fade" ng-class="{  in:showDragInfo }">
+        <span class="fa fa-chevron-left fa-lg" aria-hidden="true"></span> DRAG <span class="fa fa-chevron-right fa-lg"
+                                                                                     aria-hidden="true"></span>
+    </div>
+    <progress-arc class="element-center fade" id="progressArc" complete="progress" size="120" stroke-width="6"
+                  stroke="#ffffff"
+                  background="#000000" ng-class="{halfIn:showProgress}">
+
+    </progress-arc>
+</div>
+
+<scroll-indicator ng-controller="ScrollCtrl" ng-model="scrollProperties"></scroll-indicator>
+<div class="topBar" ng-controller="FullScreenCtrl">
+
+    <label class="btn btn-lg" ng-click="toggle()">
+
+                <span class="fa fa-lg hilight"
+                      ng-class="{'fa-expand':!fullscreen,'fa-compress':fullscreen}"
+                      aria-hidden="true"></span>
+
+    </label>
+    <label class="btn btn-lg">
+        <span class="fa fa-lg fa-times hilight"  aria-hidden="true"
+              href="" ng-click="backToMenu()">
+                                                                         </span></label>
+</div>
+
+
+<div class="toolBar" ng-controller="CollapseCtrl">
+
+    <div collapse="isCollapsed">
+        <div class="toolContainer">
+            <div class="list-group toolContent" ng-controller="ToolBarCtrl">
+                <label>
+                    <input type="checkbox" ng-model="interpolation"> Interpolation
+                </label>
+                <hr/>
+                <label>Image Size</label>
+                <slider-control
+                        touch-enabled="{{hasTouch}}"
+                        enabled="{{enabled}}"
+                        ng-model="imageScale"
+                        min="{{imageSizeSliderValues.min}}"
+                        max="{{imageSizeSliderValues.max}}"
+                        increment=m ,.l,k,;1
+                "{{imageSizeSliderValues.step}}">
+                </slider-control>
+                <hr/>
+                <label>Sensitivity: {{sensitivity}}</label>
+                <slider-control
+                        touch-enabled="{{hasTouch}}"
+                        enabled="{{enabled}}"
+                        ng-model="sensitivity"
+                        min="{{sensitivitySliderValues.min}}"
+                        max="{{sensitivitySliderValues.max}}"
+                        increment="{{sensitivitySliderValues.step}}">
+                </slider-control>
+                <hr/>
+                <div class="btn-group" dropdown is-open="status.isopen">
+                    <button id="single-button" type="button" class="btn btn-primary" dropdown-toggle >
+                        {{currentPreset.title}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="simple-dropdown">
+                        <li ng-repeat="choice in presetItems">
+                            <a ng-click="clicked(choice)">{{choice.title}}</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--<button class="btn btn-default" ng-click="isCollapsed = !isCollapsed">toggle</button>-->
+    <label class="btn btn-lg" ng-click="isCollapsed = !isCollapsed">
+                <span class="fa fa-lg  hilight"
+                      ng-class="{'fa-plus-square': isCollapsed, 'fa-minus-square': !isCollapsed}"
+                      aria-hidden="true"></span>
+    </label>
+</div>
+
+
+

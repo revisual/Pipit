@@ -79,26 +79,25 @@ module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
       $scope.hasTouch = windowService.hasTouch();
       $scope.enabled = true;
 
-      $scope.$watch( 'imageScale', function () {
-         Settings.imageScale = $scope.imageScale;
+
+      $scope.$watch( 'currentPreset', function () {
+         Settings.setCurrent($scope.currentPreset) ;
+         Settings.setFromPreset($scope.currentPreset);
+         Settings.persist();
          $scope.$emit( 'imageScale', Settings.getImageSizeAsCSS() );
       } );
 
-      $scope.$watch( 'sensitivity', function () {
-         Settings.sensitivity = $scope.sensitivity;
-      } );
+      Settings.changed.add(function(){
+         $scope.currentPreset = Settings.items[Settings.current];
+         $scope.presetItems = Settings.items;
+      });
 
-      $scope.$watch( 'interpolation', function () {
-         Settings.interpolation = $scope.interpolation;
-      } );
+      $scope.isopen = false;
 
-      $scope.imageScale = Settings.imageScale;
-      $scope.imageSizeSliderValues = Settings.imageSizeSliderValues;
-
-      $scope.sensitivity = Settings.sensitivity;
-      $scope.sensitivitySliderValues = Settings.sensitivitySliderValues;
-
-      $scope.interpolation = Settings.interpolation;
+      $scope.clicked = function(choice) {
+         $scope.isopen = false;
+         $scope.currentPreset = choice  ;
+      };
 
 
    }] );
@@ -128,10 +127,10 @@ module.controller( 'ImageSizeCtrl', ['$scope', 'Settings',
 
       $scope.checkModel = Settings.sizes;
 
-      $scope.radioModel = Settings.currentSize;
+      $scope.radioModel = Settings.imageSize;
 
       $scope.$watch( 'radioModel', function () {
-         Settings.currentSize = $scope.radioModel;
+         Settings.imageSize = $scope.radioModel;
       } );
 
 
@@ -140,7 +139,26 @@ module.controller( 'ImageSizeCtrl', ['$scope', 'Settings',
 module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowService', '$location',
    function ( $scope, BookService, Settings, windowService, $location ) {
 
+
       BookService.reset();
+
+      if( Settings.items.length == 0)
+      {
+         Settings.load()
+            .then(function(data){
+               Settings.setFromCookie();
+               Settings.setFromPreset( $location.search() );
+               BookService.load();
+            })
+      }
+      else
+      {
+
+      }
+
+
+
+
 
       $scope.hasTouch = windowService.hasTouch();
 
@@ -169,7 +187,6 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
       BookService.tick.add( function ( adjust ) {
 
          var adjustedWidth = windowService.width / Settings.sensitivity;
-
          var move = ( $scope.trackPad.distancePoint.mx / adjustedWidth);
          var pageData = adjust( move );
          var overlay = $scope.imageOverlay;
@@ -185,9 +202,9 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
       } );
 
 
-      Settings.setFromPreset( $location.search() );
 
-      BookService.load();
+
+
 
       $scope.$watch( 'active', function () {
 
