@@ -142,19 +142,14 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
 
       BookService.reset();
 
-      if( Settings.items.length == 0)
-      {
+
          Settings.load()
             .then(function(data){
                Settings.setFromCookie();
                Settings.setFromPreset( $location.search() );
                BookService.load();
             })
-      }
-      else
-      {
 
-      }
 
 
 
