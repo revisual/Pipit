@@ -114,10 +114,12 @@ angular.module( 'app.services', [] )
          applyValue: function ( value ) {
             var test = value;
             var newValue = this.targetValue + test;
-            if (newValue < 0) this.targetValue = 0;
-            else if (newValue > this.totalPages - 1)  this.targetValue = this.totalPages - 1;
-            else this.targetValue += test;
+            this.targetValue += test;
             this.currentValue += (this.targetValue - this.currentValue) * Settings.drag;
+
+            if (this.currentValue < 0) this.currentValue = 0;
+            else if (this.currentValue > this.totalPages - 1)  this.currentValue = this.totalPages - 1;
+
             var v = this.currentValue;
             this.currentPage = Math.floor( v );
             this.currentAlpha = v - this.currentPage;
