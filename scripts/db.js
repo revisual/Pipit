@@ -11,6 +11,7 @@ module.exports.DB = function () {
       , BOOK_TABLE = 'book'
       , PRESETS_TABLE = 'presets'
       , QUERY_ALL = 'SELECT * FROM %I'
+      , ORDER_BY = ' ORDER BY %I ASC'
       , QUERY_BY_VAL = 'SELECT * FROM %I WHERE %I=%L'
       , QUERY_BY_MULTIPLE_VAL = 'SELECT * FROM %I WHERE %I IN (%L)';
 
@@ -45,44 +46,11 @@ module.exports.DB = function () {
    };
 
    this.getPresets = function () {
-      var sql = format( QUERY_ALL, PRESETS_TABLE)
+      var sql = format( QUERY_ALL + ORDER_BY, PRESETS_TABLE, "id");
       return sendQuery( sql )
          .then( function ( data ) {
             return Promise.resolve( data.rows );
          } )
-      /*return  Promise.resolve(  [
-       {
-       title: "worst",
-       currentSize: "xsmall",
-       sensitivity: 1000,
-       drag: 0.025,
-       imageScale: 50,
-       interpolation: true,
-       fps: 44,
-       killThreshold: 10
-       },
-
-       {
-       title: "ok",
-       currentSize: "xsmall",
-       sensitivity: 1000,
-       drag: 0.025,
-       imageScale: 77,
-       interpolation: true,
-       fps: 44,
-       killThreshold: 10
-       },
-       {
-       title: "best",
-       currentSize: "medium",
-       sensitivity: 1000,
-       drag: 0.025,
-       imageScale: 110,
-       interpolation: true,
-       fps: 44,
-       killThreshold: 10
-       }
-       ]);*/
 
 
    };
