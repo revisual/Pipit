@@ -145,8 +145,9 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
 
          Settings.load()
             .then(function(data){
-               Settings.setFromCookie();
-               Settings.setFromPreset( $location.search() );
+               Settings.setCurrent(0);
+               /*Settings.setFromCookie();
+               Settings.setFromPreset( $location.search() );*/
                BookService.load();
             })
 
