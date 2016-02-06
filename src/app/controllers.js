@@ -73,7 +73,7 @@ module.controller( 'FullScreenCtrl', ['$scope',  'windowService', 'Fullscreen', 
 
    }] );
 
-module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
+/*module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
    function ( $scope, Settings, windowService ) {
 
       $scope.hasTouch = windowService.hasTouch();
@@ -87,12 +87,14 @@ module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
          $scope.$emit( 'imageScale', Settings.getImageSizeAsCSS() );
       } );
 
-      Settings.changed.add(function(){
+      Settings.changed.add(function(){                `
          $scope.currentPreset = Settings.items[Settings.current];
          $scope.presetItems = Settings.items;
       });
 
+
       $scope.isopen = false;
+      //$scope.$emit( 'imageScale', Settings.getImageSizeAsCSS() );
 
       $scope.clicked = function(choice) {
          $scope.isopen = false;
@@ -100,7 +102,7 @@ module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
       };
 
 
-   }] );
+   }] );*/
 
 module.controller( 'ScrollCtrl', ['$scope', 'BookService',
    function ( $scope, BookService ) {
@@ -145,11 +147,12 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
 
          Settings.load()
             .then(function(data){
-               Settings.setCurrent(0);
+               Settings.setFromPreset(Settings.items[0]);
+
                /*Settings.setFromCookie();
                Settings.setFromPreset( $location.search() );*/
                BookService.load();
-            })
+            })  ;
 
 
 
@@ -176,6 +179,7 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
             $scope.showProgress = false;
             $scope.enabled = true;
             $scope.showDragInfo = true;
+
          } );
 
       } );
