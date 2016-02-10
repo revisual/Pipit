@@ -219,7 +219,7 @@ angular.module( 'app.services', [] )
       var reset = function () {
          kill();
          bookData.reset();
-         imageService.on.removeAll();
+         imageService.reset();
          _tick.removeAll();
       };
 

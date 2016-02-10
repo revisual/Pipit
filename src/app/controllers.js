@@ -31,7 +31,7 @@ module.controller( 'ProjectCtrl', ['$scope', '$location', 'API',
    }] );
 
 
-module.controller( 'FullScreenCtrl', ['$scope',  'windowService', 'Fullscreen', 'Settings',
+module.controller( 'FullScreenCtrl', ['$scope', 'windowService', 'Fullscreen', 'Settings',
    function ( $scope, windowService, Fullscreen, Settings ) {
 
       $scope.toggle = function () {
@@ -74,35 +74,35 @@ module.controller( 'FullScreenCtrl', ['$scope',  'windowService', 'Fullscreen', 
    }] );
 
 /*module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
-   function ( $scope, Settings, windowService ) {
+ function ( $scope, Settings, windowService ) {
 
-      $scope.hasTouch = windowService.hasTouch();
-      $scope.enabled = true;
-
-
-      $scope.$watch( 'currentPreset', function () {
-         Settings.setCurrent($scope.currentPreset) ;
-         Settings.setFromPreset($scope.currentPreset);
-         Settings.persist();
-         $scope.$emit( 'imageScale', Settings.getImageSizeAsCSS() );
-      } );
-
-      Settings.changed.add(function(){                `
-         $scope.currentPreset = Settings.items[Settings.current];
-         $scope.presetItems = Settings.items;
-      });
+ $scope.hasTouch = windowService.hasTouch();
+ $scope.enabled = true;
 
 
-      $scope.isopen = false;
-      //$scope.$emit( 'imageScale', Settings.getImageSizeAsCSS() );
+ $scope.$watch( 'currentPreset', function () {
+ Settings.setCurrent($scope.currentPreset) ;
+ Settings.setFromPreset($scope.currentPreset);
+ Settings.persist();
+ $scope.$emit( 'imageScale', Settings.getImageSizeAsCSS() );
+ } );
 
-      $scope.clicked = function(choice) {
-         $scope.isopen = false;
-         $scope.currentPreset = choice  ;
-      };
+ Settings.changed.add(function(){                `
+ $scope.currentPreset = Settings.items[Settings.current];
+ $scope.presetItems = Settings.items;
+ });
 
 
-   }] );*/
+ $scope.isopen = false;
+ //$scope.$emit( 'imageScale', Settings.getImageSizeAsCSS() );
+
+ $scope.clicked = function(choice) {
+ $scope.isopen = false;
+ $scope.currentPreset = choice  ;
+ };
+
+
+ }] );*/
 
 module.controller( 'ScrollCtrl', ['$scope', 'BookService',
    function ( $scope, BookService ) {
@@ -139,25 +139,21 @@ module.controller( 'ImageSizeCtrl', ['$scope', 'Settings',
    }] );
 
 module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowService', '$location',
-   function ( $scope, BookService, Settings, windowService, $location ) {
+   function ( $scope, BookService, Settings, windowService ) {
 
+      $scope.$on( "$destroy", function () {
+         BookService.reset();
+         BookService.on.removeAll();
+      } );
 
-      BookService.reset();
+      Settings.load()
+         .then( function ( data ) {
+            Settings.setFromPreset( Settings.items[0] );
 
-
-         Settings.load()
-            .then(function(data){
-               Settings.setFromPreset(Settings.items[0]);
-
-               /*Settings.setFromCookie();
-               Settings.setFromPreset( $location.search() );*/
-               BookService.load();
-            })  ;
-
-
-
-
-
+            /*Settings.setFromCookie();
+             Settings.setFromPreset( $location.search() );*/
+            BookService.load();
+         } );
 
       $scope.hasTouch = windowService.hasTouch();
 
@@ -200,10 +196,6 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
          }
 
       } );
-
-
-
-
 
 
       $scope.$watch( 'active', function () {
