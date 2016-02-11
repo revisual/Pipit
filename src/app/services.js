@@ -209,7 +209,7 @@ angular.module( 'app.services', [] )
       var load = function () {
 
          var search = $location.search();
-         API.getBook( search.id, Settings.getImageSizeValue() )
+         API.getBook( search.id || search.book, Settings.getImageSizeValue() )
             .then( function ( data ) {
                imageService.resetWith( data.book.imageURLs );
                imageService.start();
