@@ -182,8 +182,10 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
 
       BookService.tick.add( function ( adjust ) {
 
-         var adjustedWidth = windowService.width / Settings.sensitivity;
-         var move = ( $scope.trackPad.distancePoint.mx / adjustedWidth);
+         var cappedDelta = Math.min(Math.max($scope.trackPad.distancePoint.mx , -Settings.deltaThrottle) , Settings.deltaThrottle);
+         var move = ( cappedDelta * Settings.sensitivity );
+         move = ( isNaN(move)) ?  0 : move;
+
          var pageData = adjust( move );
          var overlay = $scope.imageOverlay;
          overlay.setBottomImage( pageData.baseURL );

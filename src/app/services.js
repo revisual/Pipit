@@ -112,10 +112,10 @@ angular.module( 'app.services', [] )
             this.targetValue = this.currentValue;
          },
          applyValue: function ( value ) {
-            var test = value;
-            var newValue = this.targetValue + test;
-            this.targetValue += test;
-            this.currentValue += (this.targetValue - this.currentValue) * Settings.drag;
+
+            this.targetValue += value;
+            var diff = (this.targetValue - this.currentValue) * Settings.drag;
+            this.currentValue += Math.min( Math.max( diff, -Settings.maxVel ), Settings.maxVel ); //
 
             if (this.currentValue < 0) this.currentValue = 0;
             else if (this.currentValue > this.totalPages - 1)  this.currentValue = this.totalPages - 1;
@@ -243,12 +243,14 @@ angular.module( 'app.services', [] )
             fps: 40,
             imageSize: 'xsmall',
             sizes: {xsmall: 480, small: 768, medium: 992, large: 1200, xlarge: 1620, auto: 'auto'},
+            maxVel: 0.55,
             fullscreen: false,
-            sensitivity: 100,
-            drag: 0.025,
+            sensitivity: 0.5,
+            drag: 0.1,
             imageScale: 110,
             interpolation: true,
             killThreshold: 10,
+            deltaThrottle: 33,
             current: 1,
             items: [],
 
