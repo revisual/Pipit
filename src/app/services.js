@@ -67,11 +67,29 @@ angular.module( 'app.services', [] )
                   return result.data;
                } );
          },
-         getPresets: function () {
-            return $http.get( '/api/presets' )
-               .then( function ( result ) {
-                  return result.data;
-               } );
+         getPresets: function ( hasTouch ) {
+            //mocks up db
+            var o = {
+               items: [
+                  {
+                     imagesize: 'auto',
+                     maxVel: 0.55,
+                     sensitivity: (hasTouch) ? 0.55 : 0.22,
+                     drag: 0.088,
+                     imageScale: 150,
+                     interpolation: true,
+                     killThreshold: 10,
+                     deltaThrottle: 22,
+                     fps: 33
+                  }
+               ],
+               success: true
+            };
+            return Promise.resolve( o );
+            /*return $http.get( '/api/presets' )
+             .then( function ( result ) {
+             return result.data;
+             } );*/
          },
 
          getProjectList: function ( search ) {
@@ -312,7 +330,7 @@ angular.module( 'app.services', [] )
 
             load: function () {
 
-               return API.getPresets()
+               return API.getPresets(windowService.hasTouch())
                   .then( function ( data ) {
                      if (data.success) {
                         that.items = data.items;
