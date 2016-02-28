@@ -79,7 +79,7 @@ angular.module( 'app.services', [] )
                      imageScale: 150,
                      interpolation: true,
                      killThreshold: 10,
-                     deltaThrottle: 22,
+                     deltaThrottle: 30,
                      fps: 33
                   }
                ],
