@@ -53,7 +53,6 @@ angular.module( 'app.directives', [] )
                }
             }
 
-
             function mouseDown( event ) {
 
                event.preventDefault();
@@ -100,11 +99,8 @@ angular.module( 'app.directives', [] )
 
                var trackPad = scope.trackPad;
                trackPad.distancePoint.mx = pos.x - trackPad.previousPoint.mx;
-               trackPad.distancePoint.my = pos.y - trackPad.previousPoint.my;
                trackPad.previousPoint.mx = pos.x;
-               trackPad.previousPoint.my = pos.y;
                trackPad.distancePoint.x = pos.x - trackPad.previousPoint.x;
-               trackPad.distancePoint.y = pos.y - trackPad.previousPoint.y;
                _moveValidated = true;
 
             }

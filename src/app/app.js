@@ -2,12 +2,16 @@
 
 var module = angular.module( 'app',
    [
+      'window-service',
+      'pipit-api',
+      'pipit-settings',
       'app.services', 'app.directives',
       'app.controllers', 'ngRoute',  'ngCookies',
       'ngTouch', 'ui.bootstrap',
       'angular-progress-arc',
       'FBAngular',
       'angular-animation-frame',
+      'tick-service',
       'angular-slider',
       'angular-scroll-indicator'
    ] );

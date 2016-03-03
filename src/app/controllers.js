@@ -73,51 +73,20 @@ module.controller( 'FullScreenCtrl', ['$scope', 'windowService', 'Fullscreen', '
 
    }] );
 
-/*module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
- function ( $scope, Settings, windowService ) {
+module.controller( 'ScrollCtrl', ['$scope', 'bookData', 'tickService',
+   function ( $scope, bookData, tickService ) {
 
- $scope.hasTouch = windowService.hasTouch();
- $scope.enabled = true;
-
-
- $scope.$watch( 'currentPreset', function () {
- Settings.setCurrent($scope.currentPreset) ;
- Settings.setFromPreset($scope.currentPreset);
- Settings.persist();
- $scope.$emit( 'imageScale', Settings.getImageSizeAsCSS() );
- } );
-
- Settings.changed.add(function(){                `
- $scope.currentPreset = Settings.items[Settings.current];
- $scope.presetItems = Settings.items;
- });
-
-
- $scope.isopen = false;
- //$scope.$emit( 'imageScale', Settings.getImageSizeAsCSS() );
-
- $scope.clicked = function(choice) {
- $scope.isopen = false;
- $scope.currentPreset = choice  ;
- };
-
-
- }] );*/
-
-module.controller( 'ScrollCtrl', ['$scope', 'BookService',
-   function ( $scope, BookService ) {
-      var pageData = BookService.data;
 
       $scope.scrollProperties = {
-         ratio: 1 / pageData.totalPages,
-         position: pageData.currentValue / (pageData.totalPages - 1)
+         ratio: 1 / bookData.totalPages,
+         position: bookData.currentValue / (bookData.totalPages - 1)
       };
 
-      BookService.tick.add( function ( adjust ) {
+      tickService.tick.add( function () {
          $scope.$apply( function () {
             $scope.scrollProperties = {
-               ratio: 1 / pageData.totalPages,
-               position: pageData.currentValue / ( pageData.totalPages - 1)
+               ratio: 1 / bookData.totalPages,
+               position: bookData.currentValue / ( bookData.totalPages - 1)
             };
          } );
       } );
@@ -138,8 +107,10 @@ module.controller( 'ImageSizeCtrl', ['$scope', 'Settings',
 
    }] );
 
-module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowService', '$location',
-   function ( $scope, BookService, Settings, windowService ) {
+module.controller( 'BookCtrl', ['$scope', 'BookService', 'tickService', 'Settings', 'windowService',
+   function ( $scope, BookService, tickService, Settings, windowService ) {
+
+      var bookData = BookService.data;
 
       $scope.$on( "$destroy", function () {
          BookService.reset();
@@ -149,9 +120,6 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
       Settings.load()
          .then( function ( data ) {
             Settings.setFromPreset( Settings.items[0] );
-
-            /*Settings.setFromCookie();
-             Settings.setFromPreset( $location.search() );*/
             BookService.load();
          } );
 
@@ -180,21 +148,33 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
 
       } );
 
-      BookService.tick.add( function ( adjust ) {
+      tickService.tick.add( function () {
 
-         var cappedDelta = Math.min(Math.max($scope.trackPad.distancePoint.mx , -Settings.deltaThrottle) , Settings.deltaThrottle);
-         var move = ( cappedDelta * Settings.sensitivity );
-         move = ( isNaN(move)) ?  0 : move;
-
-         var pageData = adjust( move );
          var overlay = $scope.imageOverlay;
-         overlay.setBottomImage( pageData.baseURL );
+         var cappedDelta =
+            Math.min(
+               Math.max(
+                  $scope.trackPad.distancePoint.mx,
+                  -Settings.deltaThrottle
+               ),
+               Settings.deltaThrottle
+            );
+
+         var move = ( cappedDelta * Settings.sensitivity );
+
+         BookService.moveBy( isNaN( move ) ? 0 : move );
+
+         overlay.setBottomImage( bookData.baseURL );
 
          if (Settings.interpolation) {
-            overlay.setTopImage( pageData.overlayURL, pageData.overlayOpacity );
+            overlay.setTopImage( bookData.overlayURL, bookData.overlayOpacity );
          }
          else {
             overlay.disableTopImage();
+         }
+
+         if (bookData.isComplete() && !$scope.active) {
+            tickService.stop();
          }
 
       } );
@@ -206,11 +186,8 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
             if ($scope.showDragInfo) {
                $scope.showDragInfo = false;
             }
-            BookService.start();
-         }
-
-         else {
-            BookService.end();
+            bookData.backToBase();
+            tickService.start( Settings.fps );
          }
       } );
 

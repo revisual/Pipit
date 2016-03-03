@@ -42,6 +42,10 @@ module.exports = function ( grunt ) {
             pipit: {
                src: [
                   'src/app/angular-progress-arc.js',
+                  'src/app/pipit-api.js',
+                  'src/app/tick-service.js',
+                  'src/app/window-service.js',
+                  'src/app/pipit-settings.js',
                   'src/app/services.js',
                   'src/app/angular-animation-frame.js',
                   'src/app/angular-fullscreen.js',
@@ -81,9 +85,6 @@ module.exports = function ( grunt ) {
             }
          },
          karma: {
-            /* unit: {
-             configFile: 'karma.conf.js'
-             }   ,*/
             continuous: {
                configFile: 'karma.conf.js',
                singleRun: true,

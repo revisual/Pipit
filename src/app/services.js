@@ -2,120 +2,15 @@
 
 angular.module( 'app.services', [] )
 
-   .factory( 'windowService', ['$window', function ( $window ) {
-
-      var signal = new signals.Signal();
-      var o = {
-         resize: signal,
-         width: $window.innerWidth,
-         height: $window.innerHeight,
-         hasTouch: function () {
-            return ( 'ontouchstart' in $window);
-         },
-         back: function () {
-            $window.history.back();
-         }
-
-      };
-
-      $window.onresize = function ( event ) {
-         o.width = $window.innerWidth;
-         o.height = $window.innerHeight;
-         signal.dispatch( o.width, o.height );
-      };
-      return o;
-
-   }] )
-
-   /*  .factory( 'imageSize', ['Settings', 'windowService', function ( Settings, windowService ) {
-
-
-    return {
-    getValue: function () {
-
-    var sizes = Settings.sizes;
-    var currentSize = Settings.currentSize;
-    var value = sizes[currentSize];
-
-    if (value == 'auto') {
-    var windowSize = windowService.width;
-    if (windowSize <= sizes.xsmall)return sizes.xsmall;
-    if (windowSize <= sizes.small)return sizes.small;
-    if (windowSize <= sizes.medium)return sizes.medium;
-    if (windowSize <= sizes.large)return sizes.large;
-    if (windowSize <= sizes.xlarge)return sizes.xlarge;
-    }
-    return value;
-
-
-    }
-    }
-    }] )*/
-
-   .factory( 'API', ['$http', function ( $http ) {
-
-      return {
-         getBook: function ( bookID, imageSize ) {
-            return $http.get( '/api/book?id=' + bookID + '&size=' + imageSize )
-               .then( function ( result ) {
-                  return result.data;
-               } );
-         },
-         getProject: function ( projectID ) {
-            return $http.get( '/api/project?id=' + projectID )
-               .then( function ( result ) {
-                  return result.data;
-               } );
-         },
-         getPresets: function ( hasTouch ) {
-            //mocks up db
-            var o = {
-               items: [
-                  {
-                     imagesize: 'auto',
-                     maxVel: 0.55,
-                     sensitivity: (hasTouch) ? 0.55 : 0.22,
-                     drag: 0.088,
-                     imageScale: 150,
-                     interpolation: true,
-                     killThreshold: 10,
-                     deltaThrottle: 30,
-                     fps: 33
-                  }
-               ],
-               success: true
-            };
-            return Promise.resolve( o );
-            /*return $http.get( '/api/presets' )
-             .then( function ( result ) {
-             return result.data;
-             } );*/
-         },
-
-         getProjectList: function ( search ) {
-
-            var projects = search.projects;
-            projects = ( projects != undefined ) ? '?projects=' + projects : "/";
-            return $http.get( '/api/listProject' + projects )
-               .then( function ( result ) {
-                  return result.data;
-               } );
-         }
-      }
-
-
-   }] )
-
-   //todo - pull out the tick stuff into its own service
    .factory( 'bookData', ['Settings', function ( Settings ) {
 
       return {
          isComplete: function () {
             var threshold = Settings.killThreshold;
-            var cV = Math.round( this.currentValue * threshold );
-            var tV = Math.round( this.targetValue * threshold );
-            return cV === tV;
+            // round both and compare
+            return ((( this.currentValue * threshold ) + 0.5 << 1) >> 1) === ((( this.targetValue * threshold ) + 0.5 << 1) >> 1);
          },
+
          reset: function () {
             this.totalPages = 0;
             this.currentPage = 0;
@@ -126,22 +21,39 @@ angular.module( 'app.services', [] )
             this.overlayURL = null;
             this.overlayOpacity = -1;
          },
+
          backToBase: function () {
             this.targetValue = this.currentValue;
          },
+
          applyValue: function ( value ) {
 
             this.targetValue += value;
-            var diff = (this.targetValue - this.currentValue) * Settings.drag;
-            this.currentValue += Math.min( Math.max( diff, -Settings.maxVel ), Settings.maxVel ); //
 
-            if (this.currentValue < 0) this.currentValue = 0;
-            else if (this.currentValue > this.totalPages - 1)  this.currentValue = this.totalPages - 1;
+            //add capped delta
+            this.currentValue +=
+               Math.min(
+                  Math.max(
+                     ((this.targetValue - this.currentValue) * Settings.drag),
+                     -Settings.maxVel
+                  ),
+                  Settings.maxVel
+               );
 
-            var v = this.currentValue;
-            this.currentPage = Math.floor( v );
-            this.currentAlpha = v - this.currentPage;
+            // cap value within pages
+            this.currentValue =
+               Math.min(
+                  Math.max(
+                     this.currentValue,
+                     0
+                  ),
+                  this.totalPages - 1
+               );
+
+            this.currentPage = this.currentValue | 0;//bitwise floor
+            this.currentAlpha = this.currentValue - this.currentPage;
          },
+
          applyUrls: function ( imageService ) {
 
             var overlayIndex = this.currentPage + 1;
@@ -170,58 +82,20 @@ angular.module( 'app.services', [] )
 
    }] )
 
-   .factory( 'BookService', ['$location', 'animationFrame', 'bookData', 'API', 'imageService', 'Settings', function ( $location, animationFrame, bookData, API, imageService, Settings ) {
 
-      var NULL_RETURN = {baseURL: null, overlayURL: null, overlayOpacity: -1};
-      var _tick = new signals.Signal();
-      var _active;
-      var _permissionToEnd = false;
-      var _stopTimeOut;
+   .factory( 'BookService', ['$location', 'bookData', 'API', 'imageService', 'Settings', function ( $location, bookData, API, imageService, Settings ) {
 
-
-      var _update = function () {
-         _stopTimeOut = setTimeout( function () {
-            if (!_active)return;
-            animationFrame( _update );
-            _tick.dispatch( adjustMultiplier );
-         }, Settings.fps );
-
+      var reset = function () {
+         bookData.reset();
+         imageService.reset();
       };
 
-      var start = function () {
-         bookData.totalPages = imageService.totalNumberImages;
-         _permissionToEnd = false;
-         if (!_active) {
-            _active = true;
-            _update();
-         }
-         else {
-            bookData.backToBase();
-         }
-      };
 
-      var end = function () {
-         _permissionToEnd = true;
-      };
-
-      var kill = function () {
-         _active = false;
-         _permissionToEnd = false;
-         clearTimeout( _stopTimeOut );
-      };
-
-      var adjustMultiplier = function ( value ) {
-         if (isNaN( value ))return NULL_RETURN;
+      var moveBy = function ( value ) {
 
          bookData.applyValue( value );
          bookData.applyUrls( imageService );
 
-         if (_permissionToEnd && bookData.isComplete()) {
-            console.log( "KILL" );
-            kill();
-         }
-
-         return bookData;
       };
 
       var load = function () {
@@ -229,16 +103,10 @@ angular.module( 'app.services', [] )
          var search = $location.search();
          API.getBook( search.id || search.book, Settings.getImageSizeValue() )
             .then( function ( data ) {
+               bookData.totalPages = data.book.imageURLs.length;
                imageService.resetWith( data.book.imageURLs );
                imageService.start();
             } );
-      };
-
-      var reset = function () {
-         kill();
-         bookData.reset();
-         imageService.reset();
-         _tick.removeAll();
       };
 
       return {
@@ -246,112 +114,14 @@ angular.module( 'app.services', [] )
          progress: imageService.on.progress,
          complete: imageService.on.complete,
          data: bookData,
-         start: start,
-         tick: _tick,
-         end: end,
          load: load,
-         reset: reset
+         reset: reset,
+         moveBy: moveBy
       }
 
    }] )
 
-   .factory( 'Settings', ['$cookies', 'windowService', 'API', function ( $cookies, windowService, API ) {
 
-      var that = {
-            fps: 40,
-            imageSize: 'xsmall',
-            sizes: {xsmall: 480, small: 768, medium: 992, large: 1200, xlarge: 1620, auto: 'auto'},
-            maxVel: 0.55,
-            fullscreen: false,
-            sensitivity: 0.5,
-            drag: 0.1,
-            imageScale: 110,
-            interpolation: true,
-            killThreshold: 10,
-            deltaThrottle: 33,
-            current: 1,
-            items: [],
-
-            changed: new signals.Signal(),
-
-            getImageSizeValue: function () {
-
-               var sizes = this.sizes;
-               var imageSize = this.imageSize;
-               var value = sizes[imageSize];
-
-               if (value == 'auto') {
-                  var windowSize = windowService.width;
-                  if (windowSize <= sizes.xsmall)return sizes.xsmall;
-                  if (windowSize <= sizes.small)return sizes.small;
-                  if (windowSize <= sizes.medium)return sizes.medium;
-                  if (windowSize <= sizes.large)return sizes.large;
-                  if (windowSize <= sizes.xlarge)return sizes.xlarge;
-               }
-               return value;
-            },
-            setFromCookie: function () {
-               if ($cookies.preset == undefined)return;
-               var index = parseInt( $cookies.preset );
-               this.current = index;
-               this.setFromPreset( this.items[index] );
-            },
-            setFromPreset: function ( data ) {
-
-               if (data == null)return;
-
-               for (var name in that) {
-                  var nameLC = name.toLowerCase();
-                  if (data.hasOwnProperty( name ) && data[name] != null) {
-                     that[name] = data[name];
-                  }
-                  else if (data.hasOwnProperty( nameLC ) && data[nameLC] != null) {
-                     that[name] = data[nameLC];
-                  }
-               }
-               that.changed.dispatch();
-            },
-            getImageSizeAsCSS: function () {
-
-               if (this.imageScale < 100)
-                  return this.imageScale + "%";
-               if (this.imageScale < 110)
-                  return "contains";
-               else
-                  return "cover";
-            }
-            ,
-
-            persist: function () {
-               if (this.current == -1)return;
-               $cookies.preset = this.current
-            }
-            ,
-
-            load: function () {
-
-               return API.getPresets(windowService.hasTouch())
-                  .then( function ( data ) {
-                     if (data.success) {
-                        that.items = data.items;
-                        that.changed.dispatch();
-                     }
-                     return data;
-                  } );
-            }
-            ,
-
-            setCurrent: function ( value ) {
-               var index = this.items.indexOf( value );
-               if (value == -1)return;
-               this.current = index;
-            }
-         }
-         ;
-
-      return that;
-
-   }] )
 
    .
    value( 'imageService', new ImageListLoader() );
