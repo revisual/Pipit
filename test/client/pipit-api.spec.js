@@ -20,20 +20,12 @@ describe( 'Services', function () {
                "success": true
             } );
 
-         $httpBackend.when( 'GET', '/api-project/?projects=one,two' )
+         $httpBackend.when( 'GET', '/api/presets' )
             .respond( {
                "success": true
             } );
 
-         $httpBackend.when( 'GET', '/api-project/?partial=three' )
-            .respond( {
-               "success": true
-            } );
 
-         $httpBackend.when( 'GET', '/api-project/' )
-            .respond( {
-               "success": true
-            } );
 
       } ) );
 
@@ -62,6 +54,20 @@ describe( 'Services', function () {
 
             var results;
             API.getProject( 'projectID' )
+               .then( function ( data ) {
+                     results = data;
+                  }
+               );
+            $httpBackend.flush();
+
+            expect( results.success ).to.be.true;
+         } )
+      );
+
+      it( 'should request the correct url, execute a GET and receive the response for getPresets', inject( function ( API ) {
+             // note this service is mocked up at the mo and does not call the db
+            var results;
+            API.getPresets( true )
                .then( function ( data ) {
                      results = data;
                   }

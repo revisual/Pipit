@@ -21,28 +21,26 @@
          },
          getPresets: function ( hasTouch ) {
             //todo: add to db
-            //mocks up db
-            var o = {
-               items: [
-                  {
-                     imagesize: 'auto',
-                     maxVel: 0.51,
-                     sensitivity: (hasTouch) ? 0.55 : 0.22,
-                     drag: 0.088,
-                     imageScale: 150,
-                     interpolation: true,
-                     killThreshold: 10,
-                     deltaThrottle: 30,
-                     fps: 33
+
+            return $http.get( '/api/presets' )
+               .then( function ( result ) {
+                  return  {
+                     items: [
+                        {
+                           imagesize: 'auto',
+                           maxVel: 0.49,
+                           sensitivity: (hasTouch) ? 0.55 : 0.22,
+                           drag: 0.088,
+                           imageScale: 150,
+                           interpolation: true,
+                           killThreshold: 10,
+                           deltaThrottle: 30,
+                           fps: 33
+                        }
+                     ],
+                     success: true
                   }
-               ],
-               success: true
-            };
-            return Promise.resolve( o );
-            /*return $http.get( '/api/presets' )
-             .then( function ( result ) {
-             return result.data;
-             } );*/
+               } );
          },
 
          getProjectList: function ( search ) {
