@@ -19,6 +19,7 @@ ImageListLoader = function () {
 
    var _files = [];
    var _filesWorking = [];
+   var _loadingFile = "";
 
    var _errors = [];
    var _that = this;
@@ -53,10 +54,11 @@ ImageListLoader = function () {
 
    this.reset = function () {
       _filesWorking.length = 0;
+      _loadingFile = "";
       _files.length = 0;
       _that.images.length = 0;
       _errors.length = 0;
-   }
+   } ;
 
    function loadNext() {
 
@@ -64,7 +66,7 @@ ImageListLoader = function () {
 
       var onload = function () {
          handleImageResult( image );
-      }
+      }  ;
 
       var onerror = function ( error ) {
 
@@ -76,17 +78,24 @@ ImageListLoader = function () {
          }
 
          handleImageResult( image );
-      }
+      }   ;
 
       image.onload = onload;
       image.onerror = onerror;
-      image.src = _filesWorking.shift();
+
+      _loadingFile = _filesWorking.shift();
+      image.src = _loadingFile;
 
    }
 
    function handleImageResult( image ) {
       image.onload = null;
       image.onerror = null;
+
+      if( image.src != _loadingFile)
+      {
+         return;
+      }
       _that.images.push( image );
 
       _that.numberLoadedImages = _that.images.length;

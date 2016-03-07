@@ -7,9 +7,23 @@ module.controller( 'MenuCtrl', ['$scope', '$location', 'API',
       var search = $location.search();
       $scope.partial = (search.partial === undefined) ? "partials/default.html" : "partials/" + search.partial + ".html";
 
-      API.getProject( search )
+      API.getProjectList( search )
          .then( function ( data ) {
+
             $scope.projects = data.projects;
+
+         } );
+
+   }] );
+
+module.controller( 'ProjectCtrl', ['$scope', '$location', 'API',
+   function ( $scope, $location, API ) {
+
+      var search = $location.search();
+      API.getProject( search.id )
+         .then( function ( data ) {
+            $scope.books = data.project.content;
+            $scope.project = data.project;
 
          } );
 
@@ -17,8 +31,8 @@ module.controller( 'MenuCtrl', ['$scope', '$location', 'API',
    }] );
 
 
-module.controller( 'FullScreenCtrl', ['$scope', '$location', '$route', 'Fullscreen', 'Settings',
-   function ( $scope, $location, $route, Fullscreen, Settings ) {
+module.controller( 'FullScreenCtrl', ['$scope', 'windowService', 'Fullscreen', 'Settings',
+   function ( $scope, windowService, Fullscreen, Settings ) {
 
       $scope.toggle = function () {
          if (Fullscreen.isEnabled()) {
@@ -35,6 +49,7 @@ module.controller( 'FullScreenCtrl', ['$scope', '$location', '$route', 'Fullscre
       };
 
       $scope.fullscreen = Settings.fullscreen;
+
       $scope.toggle = function () {
          if (Fullscreen.isEnabled()) {
             Fullscreen.cancel();
@@ -50,8 +65,7 @@ module.controller( 'FullScreenCtrl', ['$scope', '$location', '$route', 'Fullscre
       };
 
       $scope.backToMenu = function () {
-         $location.path( '/' );
-         $route.reload();
+         windowService.back();
       };
 
       $scope.fullscreen = Settings.fullscreen;
@@ -59,39 +73,21 @@ module.controller( 'FullScreenCtrl', ['$scope', '$location', '$route', 'Fullscre
 
    }] );
 
-module.controller( 'ToolBarCtrl', ['$scope', 'Settings', 'windowService',
-   function ( $scope, Settings, windowService ) {
-
-      $scope.hasTouch = windowService.hasTouch();
-      $scope.enabled = true;
-
-      $scope.$watch( 'imageSize', function () {
-         Settings.imageSize = $scope.imageSize;
-         $scope.$emit( 'imageSize', Settings.getImageSizeAsCSS() );
-      } );
-
-      $scope.$watch( 'sensitivity', function () {
-         Settings.sensitivity = $scope.sensitivity;
-      } );
-
-      $scope.imageSize = Settings.imageSize;
-      $scope.imageSizeSliderValues = Settings.imageSizeSliderValues;
-
-      $scope.sensitivity = Settings.sensitivity;
-      $scope.sensitivitySliderValues = Settings.sensitivitySliderValues;
+module.controller( 'ScrollCtrl', ['$scope', 'bookData', 'tickService',
+   function ( $scope, bookData, tickService ) {
 
 
-   }] );
+      $scope.scrollProperties = {
+         ratio: 1 / bookData.totalPages,
+         position: bookData.currentValue / (bookData.totalPages - 1)
+      };
 
-module.controller( 'ScrollCtrl', ['$scope', 'BookService',
-   function ( $scope, BookService ) {
-      var pageData = BookService.data;
-
-      $scope.scrollProperties = {ratio: 1 / pageData.totalPages, position: pageData.currentValue};
-
-      BookService.tick.add( function ( adjust ) {
+      tickService.tick.add( function () {
          $scope.$apply( function () {
-            $scope.scrollProperties = {ratio: 1 / pageData.totalPages, position: pageData.currentValue};
+            $scope.scrollProperties = {
+               ratio: 1 / bookData.totalPages,
+               position: bookData.currentValue / ( bookData.totalPages - 1)
+            };
          } );
       } );
 
@@ -102,19 +98,30 @@ module.controller( 'ImageSizeCtrl', ['$scope', 'Settings',
 
       $scope.checkModel = Settings.sizes;
 
-      $scope.radioModel = Settings.currentSize;
+      $scope.radioModel = Settings.imageSize;
 
       $scope.$watch( 'radioModel', function () {
-         Settings.currentSize = $scope.radioModel;
+         Settings.imageSize = $scope.radioModel;
       } );
 
 
    }] );
 
-module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowService',
-   function ( $scope, BookService, Settings, windowService ) {
+module.controller( 'BookCtrl', ['$scope', 'BookService', 'tickService', 'Settings', 'windowService',
+   function ( $scope, BookService, tickService, Settings, windowService ) {
 
-      BookService.reset();
+      var bookData = BookService.data;
+
+      $scope.$on( "$destroy", function () {
+         tickService.flush();
+         BookService.reset();
+      } );
+
+      Settings.load()
+         .then( function ( data ) {
+            Settings.setFromPreset( Settings.items[0] );
+            BookService.load();
+         } );
 
       $scope.hasTouch = windowService.hasTouch();
 
@@ -128,43 +135,76 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'Settings', 'windowServ
          $scope.imageOverlay.setBottomImage( img.src );
          $scope.showBook = true;
          $scope.showProgress = true;
+         $scope.showDragInfo = false;
       } );
 
       BookService.complete.addOnce( function () {
          $scope.$apply( function () {
             $scope.showProgress = false;
             $scope.enabled = true;
+            $scope.showDragInfo = true;
+
          } );
 
       } );
 
-      BookService.tick.add( function ( adjust ) {
-         var adjustedWidth = (windowService.width / Settings.sensitivity) * BookService.data.totalPages;
-         var pageData = adjust( $scope.trackPad.normalise( adjustedWidth, 1 ).distFromLastX );
+      tickService.tick.add( function () {
+
          var overlay = $scope.imageOverlay;
-         overlay.setBottomImage( pageData.baseURL );
-         overlay.setTopImage( pageData.overlayURL, pageData.overlayOpacity );
+         var cappedDelta =
+            Math.min(
+               Math.max(
+                  $scope.trackPad.distancePoint.mx,
+                  -Settings.deltaThrottle
+               ),
+               Settings.deltaThrottle
+            );
+         console.log("cappedDelta = " +cappedDelta)
+
+         var move = ( cappedDelta * Settings.sensitivity );
+
+         BookService.moveBy( isNaN( move ) ? 0 : move );
+
+         overlay.setBottomImage( bookData.baseURL );
+
+         if (Settings.interpolation) {
+            overlay.setTopImage( bookData.overlayURL, bookData.overlayOpacity );
+         }
+         else {
+            overlay.disableTopImage();
+         }
+
+         if (bookData.isComplete() && !$scope.active) {
+            tickService.stop();
+         }
+
       } );
 
-      BookService.load();
 
       $scope.$watch( 'active', function () {
 
          if ($scope.active) {
-            BookService.start();
-         }
-
-         else {
-            BookService.end();
+            if ($scope.showDragInfo) {
+               $scope.showDragInfo = false;
+            }
+            bookData.backToBase();
+            tickService.start( Settings.fps );
          }
       } );
 
-      $scope.$on( 'imageSize', function ( event, imageSize ) {
+      $scope.$on( 'imageScale', function ( event, imageScale ) {
          var overlay = $scope.imageOverlay;
-         overlay.setBottomImage( null, -1, imageSize );
-         overlay.setTopImage( null, -1, imageSize );
+         overlay.setBottomImage( null, -1, imageScale );
+         overlay.setTopImage( null, -1, imageScale );
 
       } );
+
+   }] );
+
+module.controller( 'CollapseCtrl', ['$scope',
+   function ( $scope ) {
+
+      $scope.isCollapsed = true;
 
    }] );
 

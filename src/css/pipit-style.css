@@ -1,139 +1,14 @@
-
-body {
-    background-color: #000000;
-}
-/*
-.panel {
-    background-color: #d5dfe7;
-}
-
-.panel-info > .panel-heading + .panel-collapse .panel-body {
-    border-top-color: #877965;
-}
-
-.panel-heading,
-.list-group-item {
-
-    padding: 0px;
-
-}
-
-.panel-info {
-    border-color: #403930;
-}
-
-.panel-info > .panel-heading {
-    color: #403930;
-    background-color: #beaf95;
-    border-color: #403930;
-}
-
-.panel-title .thumb,
-.list-group-item .thumb {
-
-    margin: 5px;
-
-    -webkit-box-shadow: 1px 1px 2px rgb(71, 63, 48);
-    box-shadow: 1px 1px 2px rgb(71, 63, 48);
-}
-
-.list-group-item {
-
-    background-color: transparent;
-    border: none; *//*1px solid #877965;*//*
-}
-
-.list-group > a:hover,
-.list-group > a:focus {
-
-    background-color: rgba(125, 112, 95, 0.32);
-    border: none; *//*1px solid #877965;*//*
-}
-
-.panel-title > a:hover,
-.panel-title > a:focus {
-    text-decoration: none;
-    color: #877965;
-}
-
-
-
-h1 {
-    color: #ffffff;
+/*body {
+    padding-top: 70px; /!* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. *!/
 }*/
 
-.panel-group {
-    margin-bottom: 0px;
+.portfolio-item {
+    margin-bottom: 25px;
 }
 
-.list-group-item{
-    background-color: transparent;
-    border:none;
-}
-a.list-group-item:focus, a.list-group-item:hover {
-
-
-    background-color: rgba(255,255,255,.1);
-}
-
-.red {
-    color: red;
-}
-
-.panel-heading {
-    padding: 0px;
-   /* border-bottom: 1px solid transparent;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;*/
-}
-
-.btn-group-lg>.btn, .btn-lg {
-    padding: 4px 6px;
-    font-size: 18px;
-    line-height: 1.3333333;
-    border-radius: 0px;
-    background-color: rgba(0,0,0,.33);
-}
-
-a {
-    color: rgba(255,255,255,.55);
-    text-decoration: none;
-}
-
-a:focus, a:hover {
-    color: #d5dfe7;
-}
-
-.panel {
-    margin-bottom: 20px;
-    border: hidden;
-    background-color: transparent;
-    /*border: 1px solid transparent;*/
-   /* border-radius: 4px;*/
-    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
-   /* box-shadow: 0 1px 1px rgba(0,0,0,.05);*/
-
-
-}
-.panel-default>.panel-heading+.panel-collapse>.panel-body {
-    border-top: hidden;
-    background-color: rgba(0,0,0,.33);
-}
-
-img{
-    padding-right: 5px;
-}
-
-
-.panel-default>.panel-heading {
-    background-color: transparent!important;
-    border: hidden;
-    padding: 5px;
-}
-
-.banner {
-    background-color: #4e453b;
-    margin-bottom: 10px;
+.hilight{
+    color: #eeeeee;
+    text-shadow: 1px 1px 3px #000;
 }
 
 track-pad {
@@ -144,18 +19,16 @@ track-pad {
     top: 0;
     left: 0;
 }
-/*
-.pipit-menu-button {
-    position: fixed;
-    left: 5px;
-    top: 5px;
-    opacity: 0.66;
-}*/
 
-#progressArc {
-
-    position: absolute;
+.hidden {
+    display: none;
 }
+
+
+/*#progressArc {
+
+    /!*position: absolute;*!/
+}*/
 
 :-webkit-full-screen {
     background: #000000
@@ -173,11 +46,34 @@ track-pad {
     background: #000000
 }
 
-#progressArc.circle {
+circle {
     transition: stroke-dashoffset 0.1s linear;
-    vertical-align: middle;
 
 }
+
+.avoid-clicks {
+    pointer-events: none;
+}
+
+.container-center {
+    position: absolute;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+
+}
+
+.element-center {
+   position: absolute;
+    top:50%;
+    left:50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50% );
+    -ms-transform: translate(-50%, -50% );
+    -o-transform: translate(-50%, -50% );
+    transform: translate(-50%, -50% );
+}
+
 
 .flickBook {
     /*background: #000000 ;*/
@@ -200,9 +96,17 @@ track-pad {
 
 .toolBar {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
 
+}
+
+.toolContent{
+    padding: 30px;
+    margin-bottom:0;
+}
+.toolContainer{
+    background-color: rgba(0, 0, 0, 0.55);
 }
 
 
@@ -223,16 +127,17 @@ slider-control > .fill {
 
 slider-control > .thumb {
     width: 30px;
-    background-color: rgba(255, 255, 255, 0.33);
+    background-color: rgba(255, 255, 255, 0.66);
     border-radius: 15px;
 }
 
 scroll-indicator{
     width: 100%;
-    height: 3px;
+    height: 5px;
     background-color: rgba(0, 0, 0, 0.33);
-    position: relative;
+    position: absolute;
     display: block;
+    bottom: 0;
 }
 
 scroll-indicator > .thumb {
@@ -246,8 +151,7 @@ scroll-indicator > .thumb {
 
 }
 
-#progressArc.fade,
-#contentContainer.fade {
+.fade {
     opacity: 0;
     -webkit-transition: opacity 0.25s linear;
     -moz-transition: opacity 0.25s linear;
@@ -255,7 +159,11 @@ scroll-indicator > .thumb {
     transition: opacity 0.25s linear;
 }
 
-#progressArc.fade.in {
-    opacity: 0.5;
+.fade.halfIn {
+    opacity: 0.66;
+}
+
+.fade.in {
+    opacity: 1;
 }
 
