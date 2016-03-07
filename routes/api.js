@@ -1,6 +1,6 @@
-module.exports = function () {
+module.exports = function (pg) {
 
-   var db = new (require( '../scripts/db' ).DB )()
+   var db = new (require( '../scripts/db' ).DB )(pg)
       , endPoint = process.env.IMAGE_END_POINT;
 
    var pad = function ( num, size ) {

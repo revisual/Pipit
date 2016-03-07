@@ -1,8 +1,8 @@
-module.exports.DB = function () {
+module.exports.DB = function (db) {
 
    var format = require( 'pg-format' )
       , Promise = require( 'promise' )
-      , pg = require( 'pg' );
+      , pg = db;
 
 
    var _url = process.env.DATABASE_URL
@@ -45,7 +45,15 @@ module.exports.DB = function () {
          } )
    };
 
-   this.getPresets = function () {
+ /*  this.getPresets = function () {
+      var sql = format( QUERY_ALL + ORDER_BY, PRESETS_TABLE, "id");
+      return sendQuery( sql )
+         .then( function ( data ) {
+            return Promise.resolve( data.rows );
+         } )
+   };*/
+
+   this.getPresets = function (name, isTouch) {
       var sql = format( QUERY_ALL + ORDER_BY, PRESETS_TABLE, "id");
       return sendQuery( sql )
          .then( function ( data ) {

@@ -1,5 +1,6 @@
 var router = require( 'express' ).Router();
-var api = require( './api' )();
+var pg = require( 'pg' )
+var api = require( './api' )(pg);
 var home = require( './home' )();
 
 /* GET home page. */
