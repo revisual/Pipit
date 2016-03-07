@@ -32,12 +32,18 @@
          clearTimeout( _stopTimeOut );
       };
 
+      var flush = function () {
+         stop() ;
+         _tick.removeAll();
+      };
+
       return {
          start: start,
          stop: stop,
          setFPS: function ( value ) {
             _fps = value;
          },
+         flush:flush,
          tick: _tick
       }
 

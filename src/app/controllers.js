@@ -113,8 +113,8 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'tickService', 'Setting
       var bookData = BookService.data;
 
       $scope.$on( "$destroy", function () {
+         tickService.flush();
          BookService.reset();
-         BookService.on.removeAll();
       } );
 
       Settings.load()
@@ -159,6 +159,7 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'tickService', 'Setting
                ),
                Settings.deltaThrottle
             );
+         console.log("cappedDelta = " +cappedDelta)
 
          var move = ( cappedDelta * Settings.sensitivity );
 
