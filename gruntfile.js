@@ -90,44 +90,6 @@ module.exports = function ( grunt ) {
                singleRun: true,
                autoWatch: false
             }
-         },
-         bump: {
-
-            options: {
-               createTag: false,
-               commit: true,
-               commitMessage: 'Release v%VERSION%',
-               commitFiles: ['package.json'],
-               push: false
-            }
-
-         },
-         gitcheckout: {
-            master: {
-               options: {
-                  branch: 'master'
-               }
-            },
-            development: {
-               options: {
-                  branch: 'development'
-               }
-            }
-         },
-         gitmerge: {
-            development: {
-               options: {
-                  branch: 'development',
-                  message: 'merging from development'
-               }
-            }
-         },
-         gitpush: {
-            tracked: {
-               options: {
-                  remote: 'origin'
-               }
-            }
          }
 
       } );
@@ -139,13 +101,12 @@ module.exports = function ( grunt ) {
    grunt.loadNpmTasks( 'grunt-htmlclean' );
    grunt.loadNpmTasks( 'grunt-mocha-test' );
    grunt.loadNpmTasks( 'grunt-karma' );
-   grunt.loadNpmTasks( 'grunt-bump' );
-   grunt.loadNpmTasks( 'grunt-git' );
 
 
 
-   grunt.registerTask( 'deploy', ['localBuild','bump', "mergeAndPush"] );
-   grunt.registerTask( 'localBuild', [/*'tests',*/ 'clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
+
+   grunt.registerTask( 'fullbuild', ['tests', 'build'] );
+   grunt.registerTask( 'build', [ 'clean:all', 'copy', 'htmlclean:deploy', 'cssmin', 'uglify'] );
    grunt.registerTask( 'tests', ['mochaTest', 'karma'] );
-   grunt.registerTask( 'mergeAndPush', ['gitcheckout:master','gitmerge:development','gitpush:tracked', 'gitcheckout:development'] );
+
 };

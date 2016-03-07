@@ -1,13 +1,0 @@
-
-
-  preprocessor
-    √ should return an instance of a Promise 
-    √ should execute callbacks in order and pass process data 
-    √ should only execute callbacks with truthful guards 
-    √ should  execute asynch callbacks 
-    √ should  execute asynch callbacks with positive guards 
-    √ should not execute asynch callbacks with negative guards 
-
-  file system access
-    readUTF8
-      √ should return an instance of a Promise 
