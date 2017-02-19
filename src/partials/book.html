@@ -18,7 +18,7 @@
 </div>
 
 <scroll-indicator ng-controller="ScrollCtrl" ng-model="scrollProperties"></scroll-indicator>
-<div class="topBar" ng-controller="FullScreenCtrl">
+<div class="topBar" ng-controller="FullScreenCtrl" ng-class="{'hidden':isHidden}">
 
     <label class="btn btn-lg" ng-click="toggle()">
 
@@ -33,22 +33,6 @@
                                                                          </span></label>
 </div>
 
-
-<!--<div class="toolBar" ng-controller="ToolBarCtrl">
-
-    <span id="dropdown" dropdown is-open="isopen">
-        <a class="hilight" id="single-button" dropdown-toggle>
-            Preset: {{currentPreset.title}} <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu" aria-labelledby="simple-dropdown">
-            <li ng-repeat="choice in presetItems">
-                <a href="#" ng-click="clicked(choice)">2 -{{choice.title}}</a>
-            </li>
-        </ul>
-    </span>
-
-
-</div>-->
 
 
 

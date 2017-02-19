@@ -4,7 +4,7 @@
 
    var app = angular.module( 'window-service', [] );
 
-   app .factory( 'windowService', ['$window', function ( $window ) {
+   app .factory( 'windowService', ['$window','$location', function ( $window , $location) {
 
       var signal = new signals.Signal();
       var o = {
@@ -17,6 +17,8 @@
          back: function () {
             $window.history.back();
          }
+         ,
+         isExternal:($location.search().isExternal == "true")
 
       };
 

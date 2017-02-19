@@ -34,6 +34,12 @@ module.controller( 'ProjectCtrl', ['$scope', '$location', 'API',
 module.controller( 'FullScreenCtrl', ['$scope', 'windowService', 'Fullscreen', 'Settings',
    function ( $scope, windowService, Fullscreen, Settings ) {
 
+      if( windowService.isExternal)
+      {
+         $scope.isHidden = true;
+         return;
+      }
+
       $scope.toggle = function () {
          if (Fullscreen.isEnabled()) {
             Fullscreen.cancel();
@@ -159,7 +165,7 @@ module.controller( 'BookCtrl', ['$scope', 'BookService', 'tickService', 'Setting
                ),
                Settings.deltaThrottle
             );
-         console.log("cappedDelta = " +cappedDelta)
+         //console.log("cappedDelta = " +cappedDelta)
 
          var move = ( cappedDelta * Settings.sensitivity );
 
