@@ -34,10 +34,14 @@ module.controller( 'ProjectCtrl', ['$scope', '$location', 'API',
 module.controller( 'FullScreenCtrl', ['$scope', 'windowService', 'Fullscreen', 'Settings',
    function ( $scope, windowService, Fullscreen, Settings ) {
 
-      if( windowService.isExternal)
-      {
+      if (windowService.isExternal) {
          $scope.isHidden = true;
-         return;
+      }
+
+      else {
+         $scope.backToMenu = function () {
+            windowService.back();
+         };
       }
 
       $scope.toggle = function () {
@@ -70,9 +74,6 @@ module.controller( 'FullScreenCtrl', ['$scope', 'windowService', 'Fullscreen', '
          $scope.fullscreen = Settings.fullscreen;
       };
 
-      $scope.backToMenu = function () {
-         windowService.back();
-      };
 
       $scope.fullscreen = Settings.fullscreen;
 
