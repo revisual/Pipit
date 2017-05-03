@@ -18,8 +18,13 @@
 </div>
 
 <scroll-indicator ng-controller="ScrollCtrl" ng-model="scrollProperties"></scroll-indicator>
-<div class="topBar" ng-controller="FullScreenCtrl" ng-class="{'hidden':isHidden}">
+<div class="topBar" ng-controller="FullScreenCtrl" >
 
+
+    <label class="btn btn-lg">
+        <span class="fa fa-lg fa-times hilight" aria-hidden="true"   ng-class="{'hidden':isHidden}"
+              href="" ng-click="backToMenu()">
+                                                                         </span></label>
     <label class="btn btn-lg" ng-click="toggle()">
 
                 <span class="fa fa-lg hilight"
@@ -27,10 +32,6 @@
                       aria-hidden="true"></span>
 
     </label>
-    <label class="btn btn-lg">
-        <span class="fa fa-lg fa-times  hilight" aria-hidden="true"
-              href="" ng-click="backToMenu()">
-                                                                         </span></label>
 </div>
 
 
