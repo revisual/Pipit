@@ -58,7 +58,7 @@ module.exports = function (pg) {
             } )
 
             .catch( function ( error ) {
-               console.log( "" )
+               res.json( {success: false, error: error} );
             } );
 
 

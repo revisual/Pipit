@@ -19,7 +19,7 @@ module.exports.DB = function (db) {
    this.getProjectByID = function ( projectID ) {
       var sql = format( QUERY_BY_VAL, PROJECT_TABLE, 'id', projectID )
          , project;
-
+      console.log("[!] db::getProjectByID ");
       return sendQuery( sql )
 
          .then( function ( data ) {
@@ -38,23 +38,16 @@ module.exports.DB = function (db) {
       var sql = ( projectIDs == null)
          ? format( QUERY_BY_VAL, PROJECT_TABLE, 'private', false )
          : format( QUERY_BY_MULTIPLE_VAL, PROJECT_TABLE, 'id', projectIDs );
-
+      console.log("[!] db::getProjects ");
       return sendQuery( sql )
          .then( function ( data ) {
             return Promise.resolve( data.rows );
          } )
    };
 
- /*  this.getPresets = function () {
-      var sql = format( QUERY_ALL + ORDER_BY, PRESETS_TABLE, "id");
-      return sendQuery( sql )
-         .then( function ( data ) {
-            return Promise.resolve( data.rows );
-         } )
-   };*/
-
    this.getPresets = function (name, isTouch) {
       var sql = format( QUERY_ALL + ORDER_BY, PRESETS_TABLE, "id");
+      console.log("[!] db::getPresets ");
       return sendQuery( sql )
          .then( function ( data ) {
             return Promise.resolve( data.rows );
@@ -66,6 +59,7 @@ module.exports.DB = function (db) {
 
    this.getBookById = function ( bookID ) {
       var sql = format( QUERY_BY_VAL, BOOK_TABLE, 'id', bookID );
+      console.log("[!] db::getBookById ");
       return sendQuery( sql )
          .then( function ( data ) {
             return Promise.resolve( data.rows[0] );
@@ -74,6 +68,7 @@ module.exports.DB = function (db) {
 
    this.getBooksByProject = function ( projectID ) {
       var sql = format( 'SELECT * FROM %I WHERE %I=%L', BOOK_TABLE, 'project', projectID );
+      console.log("[!] db::getBooksByProject ");
       return sendQuery( sql )
          .then( function ( data ) {
             return Promise.resolve( data.rows );
@@ -83,9 +78,12 @@ module.exports.DB = function (db) {
 
    var sendQuery = function ( sql ) {
       return new Promise( function ( resolve, reject ) {
+         console.log("[!] db::sendQuery database_url =",_url);
+         console.log("[!] db::sendQuery sql =",sql);
          pg.connect( _url, function ( err, client, done ) {
 
             if (client == null) {
+               console.error("[*] db::sendQuery client null: error =",err);
                reject( err );
                return;
             }
@@ -95,10 +93,11 @@ module.exports.DB = function (db) {
                done();
 
                if (err) {
+                  console.error("[*] db::sendQuery query failed: error =",err);
                   reject( err )
                }
                else {
-
+                  console.log("[!] db::sendQuery query succeeded");
                   resolve( result );
                }
             } );
