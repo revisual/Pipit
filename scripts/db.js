@@ -78,11 +78,11 @@ module.exports.DB = function (db) {
 
    var sendQuery = function ( sql ) {
       return new Promise( function ( resolve, reject ) {
-         console.log("[!] db::sendQuery database_url =",_url);
+         //console.log("[!] db::sendQuery database_url =",_url);
          console.log("[!] db::sendQuery sql =",sql);
          pg.connect( _url, function ( err, client, done ) {
 
-            if (client == null) {
+            if (client === null) {
                console.error("[*] db::sendQuery client null: error =",err);
                reject( err );
                return;
