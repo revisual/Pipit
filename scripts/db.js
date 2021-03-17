@@ -5,7 +5,7 @@ module.exports.DB = function (db) {
       , pg = db;
 
 
-   var _url = process.env.DATABASE_URL
+   var _url = process.env.DATABASE_URL + "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
       , that = this
       , PROJECT_TABLE = 'project'
       , BOOK_TABLE = 'book'
