@@ -78,9 +78,11 @@ module.exports.DB = function (db) {
 
    var sendQuery = function ( sql ) {
       return new Promise( function ( resolve, reject ) {
-         //console.log("[!] db::sendQuery database_url =",_url);
+         console.log("[!] db::sendQuery database_url =",_url);
          console.log("[!] db::sendQuery sql =",sql);
          pg.connect( _url, function ( err, client, done ) {
+
+            var did_we_time_out = false;
 
             if (client === null) {
                console.error("[*] db::sendQuery client null: error =",err);
@@ -88,11 +90,18 @@ module.exports.DB = function (db) {
                return;
             }
 
+            var timeout_handle = setTimeout(function(){
+               console.log("[!] db::sendQuery query timed out");
+               did_we_time_out = true;
+               done();
+               reject( "sendQuery Timed out: " );
+            }, 10000);
+            
             client.query( sql, function ( err, result ) {
 
-               done();
+               clearTimeout(timeout_handle);
 
-               if (err) {
+               if (err || did_we_time_out) {
                   console.error("[*] db::sendQuery query failed: error =",err);
                   reject( err )
                }
@@ -100,6 +109,9 @@ module.exports.DB = function (db) {
                   console.log("[!] db::sendQuery query succeeded");
                   resolve( result );
                }
+
+               done();
+
             } );
          } );
       } );
